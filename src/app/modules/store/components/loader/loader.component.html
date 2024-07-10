@@ -1,0 +1,16 @@
+<div class="w-full h-full flex justify-center items-center">
+  <div
+    class="card flex flex-col justify-center items-center p-5 shadow-2xl rounded-lg"
+  >
+    <div class="icon">
+      <div class="custom-loader"></div>
+    </div>
+    <div class="msg">
+      @if(msg.length > 0){
+      <p>{{ msg }}</p>
+      }@else {
+      <p class="text-lg font-bold">Cargando información</p>
+      }
+    </div>
+  </div>
+</div>

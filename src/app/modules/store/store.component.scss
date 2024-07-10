@@ -1,0 +1,17 @@
+:host {
+  display: block;
+}
+
+ion-toolbar {
+  --background: transparent;
+}
+
+ion-toast.custom-toast {
+  --background: #2d873f;
+  --color: #fff;
+  --border-radius: 10px;
+  --box-shadow: 0px 15px 50px -10px rgba(117, 117, 117, 0.521);
+}
+ion-toast.custom-toast::part(message) {
+  font-size: 15px;
+}

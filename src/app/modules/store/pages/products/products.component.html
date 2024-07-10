@@ -1,0 +1,114 @@
+<ion-content class="animate__animated animate__fadeIn">
+  <ion-grid>
+    <!-- img-banner -->
+    <ion-row class="">
+      <ion-col size="12" class="flex justify-center">
+        <img
+          src="assets/brands/brand-outline.png"
+          class="w-1/2"
+          alt="brand-outline"
+        />
+      </ion-col>
+    </ion-row>
+    <!-- input -->
+    <ion-row class="">
+      <ion-col size="12">
+        <form class="w-full flex justify-center">
+          <div class="form-control w-11/12">
+            <ion-searchbar
+              placeholder="Buscar producto"
+              inputmode="text"
+              type="text"
+              [debounce]="800"
+              animated="true"
+              (ionInput)="searchProductByTerm($event)"
+            ></ion-searchbar>
+          </div>
+        </form>
+      </ion-col>
+    </ion-row>
+    <!-- categories -->
+    <ion-row class="mt-5" class="flex justify-center items-center">
+      <!-- cat-varios -->
+      <ion-col size="3" class="flex flex-col justify-center items-center">
+        <div
+          class="rounded-full p-1 shadow-lg"
+          (click)="filterByCategory('varios')"
+        >
+          <img
+            src="assets/imgs-categories/others-category.jpg"
+            alt="atleta-normal"
+            class="rounded-full"
+            width="50px"
+            height="50px"
+          />
+        </div>
+        <p class="font-bold">Empacados</p>
+      </ion-col>
+      <!-- cat-frutas -->
+      <ion-col size="3" class="flex flex-col justify-center items-center">
+        <div
+          class="rounded-full p-1 shadow-lg"
+          (click)="filterByCategory('frutas')"
+        >
+          <img
+            src="assets/imgs-categories/fruits-category.jpg"
+            alt="atleta-normal"
+            class="rounded-full"
+            width="50px"
+            height="50px"
+          />
+        </div>
+        <p class="font-bold">Frutas</p>
+      </ion-col>
+      <!-- cat-semillas -->
+      <ion-col size="3" class="flex flex-col justify-center items-center">
+        <div
+          class="rounded-full p-1 shadow-lg"
+          (click)="filterByCategory('semillas')"
+        >
+          <img
+            src="assets/imgs-categories/nuts-and-seeds-category.jpg"
+            alt="atleta-normal"
+            class="rounded-full"
+            width="50px"
+            height="50px"
+          />
+        </div>
+        <p class="font-bold text-center">Semillas</p>
+      </ion-col>
+      <!-- cat-vegetales -->
+      <ion-col size="3" class="flex flex-col justify-center items-center">
+        <div
+          class="rounded-full p-1 shadow-lg"
+          (click)="filterByCategory('vegetales')"
+        >
+          <img
+            src="assets/imgs-categories/vegetales-category.jpg"
+            alt="atleta-normal"
+            class="rounded-full"
+            width="50px"
+            height="50px"
+          />
+        </div>
+        <p class="font-bold">Vegetales</p>
+      </ion-col>
+    </ion-row>
+    <!-- products -->
+    <ion-row class="">
+      <ion-col size="12" class="flex justify-center">
+        @if (products().length > 0){
+        <div
+          class="w-full grid grid-cols-1 gap-5 animate__animated animate__fadeIn pb-20"
+        >
+          @for (product of products(); track $index) {
+          <app-product-card [product]="product" />
+          }
+        </div>
+        }@else {
+        <app-loader />
+        }
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

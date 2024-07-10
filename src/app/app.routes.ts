@@ -2,13 +2,17 @@ import { Routes } from '@angular/router';
 
 export const routes: Routes = [
   {
-    path: '',
-    redirectTo: 'folder/inbox',
-    pathMatch: 'full',
+    path: 'auth',
+    loadChildren: () => import('./auth/auth.routes').then((m) => m.routes),
   },
   {
-    path: 'folder/:id',
-    loadComponent: () =>
-      import('./folder/folder.page').then((m) => m.FolderPage),
+    path: 'modules',
+    loadChildren: () =>
+      import('./modules/modules.routes').then((m) => m.routes),
+  },
+  {
+    path: '**',
+    redirectTo: 'auth',
+    pathMatch: 'full',
   },
 ];

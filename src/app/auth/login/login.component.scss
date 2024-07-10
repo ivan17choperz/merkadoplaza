@@ -1,0 +1,26 @@
+:host {
+  display: block;
+}
+ion-toast.custom-toast {
+  --background: #2d873f;
+  --color: #fff;
+  --border-radius: 10px;
+  --box-shadow: 0px 15px 50px -10px rgba(117, 117, 117, 0.521);
+}
+ion-toast.custom-toast::part(message) {
+  font-size: 15px;
+}
+
+.custom-loader {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: conic-gradient(#0000 10%, #f4f4f4);
+  -webkit-mask: radial-gradient(farthest-side, #0000 calc(100% - 8px), #000 0);
+  animation: s3 1s infinite linear;
+}
+@keyframes s3 {
+  to {
+    transform: rotate(1turn);
+  }
+}

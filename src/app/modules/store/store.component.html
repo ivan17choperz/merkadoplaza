@@ -1,0 +1,87 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar class="ion-flex ion-no-shadow">
+    <ion-grid fixed>
+      <ion-row class="ion-align-items-center">
+        <ion-col size="6" class="flex items-center">
+          <ion-icon size="large" name="person-circle-outline"></ion-icon>
+          <p class="w-[120px] truncate overflow-hidden ms-2 font-bold">
+            Nombre de usuario
+          </p>
+        </ion-col>
+        <ion-col size="6">
+          <div class="flex items-center justify-end">
+            <div class="mr-3">
+              <p class="text-lg font-bold text-gray-400">
+                {{ currentTotalPrice | currency : "COP" : "symbol-narrow" }}
+              </p>
+            </div>
+            <div class="">
+              <button
+                class="flex justify-center items-center relative"
+                (click)="showModal = true"
+              >
+                <span
+                  class="absolute bottom-0 -right-1 z-50 flex items-center justify-center text-white bg-green-600 rounded-full w-5 h-5 text-sm"
+                >
+                  {{ numberProductsIntoCart }}
+                </span>
+                <ion-icon name="cart" size="large"></ion-icon>
+              </button>
+            </div>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding" (handleScroll)="handleScroll($any($event))">
+  <div class="px-4 py-10">
+    <ion-router-outlet />
+  </div>
+  <!-- modal shopping cart -->
+  <ion-modal [isOpen]="showModal">
+    <ng-template>
+      <ion-header class="ion-no-border">
+        <ion-toolbar class="ion-flex ion-no-shadow">
+          <ion-grid fixed>
+            <ion-row class="ion-align-items-center">
+              <ion-col size="6">
+                <h2 class="capitalize font-bold text-xl">Carrito</h2>
+              </ion-col>
+              <ion-col size="6">
+                <div class="flex justify-end">
+                  <button (click)="showModal = false">
+                    <ion-icon
+                      name="close-circle-outline"
+                      size="large"
+                    ></ion-icon>
+                  </button>
+                </div>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-toolbar>
+      </ion-header>
+
+      <ion-content>
+        <app-cart-shopping />
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
+  <!-- toast for indicate product into cart exist -->
+  <ion-toast
+    class="custom-toast"
+    [duration]="2000"
+    [isOpen]="showToastProductExist"
+    [message]="messageToast"
+  >
+  </ion-toast>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-title>Footer</ion-title>
+  </ion-toolbar>
+</ion-footer>

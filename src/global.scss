@@ -9,6 +9,11 @@
  * https://ionicframework.com/docs/layout/global-stylesheets
  */
 
+/*Tailwind css*/
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* Core CSS required for Ionic components to work properly */
 @import "@ionic/angular/css/core.css";
 
@@ -34,4 +39,13 @@
 
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
-@import '@ionic/angular/css/palettes/dark.system.css';
+// @import "@ionic/angular/css/palettes/dark.system.css";
+ion-toast.custom-toast {
+  --background: #2d873f;
+  --color: #fff;
+  --border-radius: 10px;
+  --box-shadow: 0px 15px 50px -10px rgba(117, 117, 117, 0.521);
+}
+ion-toast.custom-toast::part(message) {
+  font-size: 15px;
+}

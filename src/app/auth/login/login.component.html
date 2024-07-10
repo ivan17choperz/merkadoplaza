@@ -1,0 +1,58 @@
+<div class="container flex flex-col justify-center items-center w-full h-full">
+  <form
+    [formGroup]="loginForm"
+    (submit)="login()"
+    class="form w-10/12 lg:w-8/12 animate__animated animate__fadeIn"
+  >
+    <img
+      src="assets/brands/brand-outline.png"
+      class="shad shadow-green-900 rounded max-h-40 w-full bg-cover"
+      alt="imagen-banner"
+      loading="lazy"
+    />
+    <div class="form-control flex flex-col mt-8">
+      <label for="" class="text-lg">Usuario:</label>
+      <input
+        type="text"
+        formControlName="email"
+        class="border border-gray-300 p-3 mt-1 rounded"
+      />
+    </div>
+
+    <div class="form-control flex flex-col mt-3">
+      <label for="" class="text-lg">Contraseña:</label>
+      <input
+        type="password"
+        formControlName="password"
+        class="border border-gray-300 p-3 mt-1 rounded"
+      />
+    </div>
+
+    <div class="d-flex mt-5">
+      <button
+        class="text-white bg-green-800 hover:bg-green-950 shadow-lg px-5 py-3 rounded-lg w-full font-bold text-lg flex justify-center items-center"
+      >
+        Iniciar sesion 
+        @if(loading()){
+        <div class="custom-loader ml-3"></div>
+        }
+      </button>
+    </div>
+
+    <div class="flex text-center flex-col mt-5">
+      <span>¿ No tienes cuenta aun ? </span>
+      <a
+        routerLink="/auth/register"
+        class="text-green-700 text-center w-full text-lg"
+      >
+        Registrate
+      </a>
+    </div>
+  </form>
+</div>
+
+<ion-toast
+  [isOpen]="showToastErrorMsg()"
+  [message]="msgError()"
+  [duration]="5000"
+></ion-toast>
