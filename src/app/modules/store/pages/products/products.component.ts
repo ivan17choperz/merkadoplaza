@@ -53,8 +53,6 @@ export default class ProductsComponent implements OnInit {
               totalPrice: 0,
             };
           });
-
-          console.log(data);
           this.products.set(data);
           this._apiProductService.setProductIntoCategories();
         }

@@ -17,8 +17,13 @@ export class AuthService {
       'Authorization',
       environment.key_api
     );
+
+    const formdata = new FormData();
+    formdata.append('email', credetials.email);
+    formdata.append('password', credetials.password);
+
     return await lastValueFrom(
-      this._http.post(`${environment.base_url}/api/login`, credetials, {
+      this._http.post(`http://localhost/mdp/api/login`, formdata, {
         headers,
       })
     );

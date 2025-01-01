@@ -14,6 +14,7 @@ import {
 import { Router, RouterModule } from '@angular/router';
 import { IonButton, IonToast } from '@ionic/angular/standalone';
 import { AuthService } from 'src/app/core/services/auth.service';
+import { StoreService } from 'src/app/core/services/store.service';
 
 const ionicComponents = [IonButton];
 
@@ -35,6 +36,7 @@ export default class LoginComponent {
   private _router: Router = inject(Router);
   private _fb: FormBuilder = inject(FormBuilder);
   private _authServices: AuthService = inject(AuthService);
+  private storeServices: StoreService = inject(StoreService);
 
   public loginForm!: FormGroup;
 
@@ -54,16 +56,20 @@ export default class LoginComponent {
     }
 
     this.loading.set(true);
-    const { status, error } = await this._authServices.login(
+    const { data, error, status } = await this._authServices.login(
       this.loginForm.value
     );
 
     if (status == 'error') {
       this.showToastErrorMsg.set(true);
-      this.msgError.set(error);
+      this.msgError.set(data.error);
       this.loading.set(false);
       return;
     }
+
+    if (!data || data == undefined) return;
+
+    this.storeServices.saveData('current_user', data);
 
     this._router.navigateByUrl('modules/store');
   }

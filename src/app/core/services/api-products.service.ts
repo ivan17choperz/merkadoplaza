@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { map, Observable } from 'rxjs';
+import { map, Observable, tap } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Datum, IResponseProducts } from '../interfaces/products.interface';
 
@@ -15,19 +15,34 @@ export class ApiProductsService {
   private _productsSemillas: Datum[] = [];
   private _productsVegetales: Datum[] = [];
   private _allProducts: Datum[] = [];
+
   public getProducts(): Observable<IResponseProducts> {
     const headers = new HttpHeaders().append(
       'Authorization',
       environment.key_api
     );
-    return this._httpClientService.get<IResponseProducts>(
-      `${environment.base_url}/api/get_productos`,
-      {
+    return this._httpClientService
+      .get<IResponseProducts>(`${environment.base_url}/api/get_productos`, {
         headers,
-      }
-    );
+      })
+      .pipe(
+        tap((res) => {
+          console.log(res);
+        })
+      );
   }
 
+  public getproductv2() {
+    const headers = new HttpHeaders().append(
+      'Authorization',
+      environment.key_api
+    );
+    this._httpClientService
+      .get('http://localhost/mdp/api/productos', {
+        headers,
+      })
+      .subscribe(console.log);
+  }
   public setProductIntoCategories() {
     this.getProducts().subscribe({
       next: (res: IResponseProducts) => {

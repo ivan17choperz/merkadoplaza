@@ -4,9 +4,11 @@
       <ion-row class="ion-align-items-center">
         <ion-col size="6" class="flex items-center">
           <ion-icon size="large" name="person-circle-outline"></ion-icon>
+          @if (userInfo()) {
           <p class="w-[120px] truncate overflow-hidden ms-2 font-bold">
-            Nombre de usuario
+            {{ userInfo()?.us_nombre }} {{ userInfo()?.us_apellido }}
           </p>
+          }
         </ion-col>
         <ion-col size="6">
           <div class="flex items-center justify-end">

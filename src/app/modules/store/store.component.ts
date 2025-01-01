@@ -5,6 +5,7 @@ import {
   Component,
   inject,
   OnInit,
+  signal,
   ViewChild,
 } from '@angular/core';
 
@@ -44,20 +45,15 @@ import {
 } from 'ionicons/icons';
 import { CartShoppingComponent } from './components/cart-shopping/cart-shopping.component';
 import { CartListProductsService } from 'src/app/core/services/cart-list-products.service';
+import { StoreService } from 'src/app/core/services/store.service';
+import { ICurrentUser } from 'src/app/core/interfaces/user.interface';
 
 const ionComponents = [
   IonTitle,
   IonHeader,
   IonToolbar,
   IonFooter,
-  IonLabel,
-  IonTabs,
-  IonTabButton,
-  IonTabBar,
-  IonActionSheet,
-  IonFabButton,
-  IonFab,
-  IonAvatar,
+
   IonRow,
   IonCol,
   IonGrid,
@@ -92,8 +88,11 @@ export default class StoreComponent implements OnInit {
   private _cartListServices: CartListProductsService = inject(
     CartListProductsService
   );
+  private _storeService: StoreService = inject(StoreService);
 
   public numberProductsIntoCart: number = 0;
+
+  public userInfo = signal<ICurrentUser | null>(null);
 
   constructor() {
     addIcons({
@@ -105,7 +104,7 @@ export default class StoreComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this._cartListServices.countProducts$.subscribe((res) => {
       this.numberProductsIntoCart = res;
     });
@@ -119,6 +118,11 @@ export default class StoreComponent implements OnInit {
     this._cartListServices.totalPrice$.subscribe((res) => {
       this.currentTotalPrice = res;
     });
+
+    const info = await this._storeService.getData('current_user');
+
+    console.log(info);
+    this.userInfo.set(info);
   }
 
   public scrollTop(): void {
