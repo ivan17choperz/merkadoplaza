@@ -4,8 +4,9 @@
 
 export const environment = {
   production: false,
-  base_url: 'https://test.mercadodeplaza.com',
-  key_api:'mdp-api'
+  // base_url: 'https://test.mercadodeplaza.com',
+  base_url: 'http://localhost/mdp/api',
+  key_api: 'mdp-api',
 };
 
 /*

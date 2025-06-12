@@ -1,20 +1,26 @@
 export interface IResponseProducts {
   status: string;
-  data: Datum[];
+  data: ProductoEmpresa[];
 }
 
-export interface Datum {
-  productoId: string;
-  productoNombre: string;
-  categoriaNombre: CategoriaNombre;
-  medidaId: string;
-  medidaNombre: string;
+export interface ProductoEmpresa {
+  idProductoEmpresa: string;
+  idEmpresa: string;
+  idProducto: null | string;
+  nombreAlt: null;
   valor: string;
-  imagen: string;
   minimo: string;
   maximo: string;
-  quantity?: number;
-  totalPrice?: number;
+  indHabilitado: string;
+  producto: Producto;
+}
+
+export interface Producto {
+  idProducto: null | string;
+  nombre: null | string;
+  idCategoria: null | string;
+  idMedida: null | string;
+  imagen: null | string;
 }
 
 export enum CategoriaNombre {

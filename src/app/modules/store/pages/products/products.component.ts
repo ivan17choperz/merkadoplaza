@@ -17,8 +17,8 @@ import {
 } from '@ionic/angular/standalone';
 import { ApiProductsService } from 'src/app/core/services/api-products.service';
 import {
-  Datum,
   IResponseProducts,
+  ProductoEmpresa,
 } from 'src/app/core/interfaces/products.interface';
 import { LoaderComponent } from '../../components/loader/loader.component';
 
@@ -36,7 +36,7 @@ const IonComponents = [IonSearchbar, IonRow, IonContent, IonCol, IonGrid];
 export default class ProductsComponent implements OnInit {
   private _apiProductService: ApiProductsService = inject(ApiProductsService);
   private _ctr = inject(ChangeDetectorRef);
-  public products = signal<Datum[]>([]);
+  public products = signal<ProductoEmpresa[]>([]);
   private _termSearchCategory: string = '';
   ngOnInit(): void {
     this._setProducts();
@@ -68,8 +68,8 @@ export default class ProductsComponent implements OnInit {
     }
     this.products.set(
       this.products().filter((product) =>
-        product.productoNombre
-          .toLowerCase()
+        product.producto
+          .nombre!.toLowerCase()
           .includes(event.target.value.toLowerCase())
       )
     );

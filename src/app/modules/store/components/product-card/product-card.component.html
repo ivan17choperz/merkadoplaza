@@ -3,9 +3,9 @@
 >
   <!-- card-header -->
   <div class="w-3/12 flex justify-center items-center">
-    @if (product?.imagen) {
+    @if (product?.producto && product?.producto?.imagen) {
     <img
-      [src]="product?.imagen"
+      [src]="product?.producto?.imagen"
       class="rounded-lg h-20"
       alt="img-product"
       loading="lazy"
@@ -18,10 +18,12 @@
   <!-- card-content -->
   <div class="p-3 relative flex flex-col justify-center items-start w-5/12">
     <div class="w-full overflow-hidden">
-      <p class="text-black font-bold truncate">{{ product?.productoNombre }}</p>
+      <p class="text-black font-bold truncate">
+        {{ product?.producto?.nombre }}
+      </p>
       <p class="text-green-600 font-bold truncate">${{ product?.valor }}</p>
       <p class="text-slate-300 text-lg">
-        {{ product?.medidaNombre }}
+        {{ product?.producto?.idMedida }}
       </p>
     </div>
   </div>

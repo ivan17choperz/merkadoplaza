@@ -14,7 +14,7 @@ import {
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { addCircleOutline, removeCircleOutline } from 'ionicons/icons';
-import { Datum } from 'src/app/core/interfaces/products.interface';
+import { ProductoEmpresa } from 'src/app/core/interfaces/products.interface';
 import { CartListProductsService } from 'src/app/core/services/cart-list-products.service';
 
 @Component({
@@ -30,7 +30,7 @@ export class CartShoppingComponent implements OnInit {
     CartListProductsService
   );
 
-  public listProducts: Datum[] = [];
+  public listProducts: ProductoEmpresa[] = [];
   constructor() {
     addIcons({
       addCircleOutline,
@@ -49,9 +49,9 @@ export class CartShoppingComponent implements OnInit {
   }
 
   public updateQuantityProduct(idProduct: string, quantity: number): void {
-    const product = this.listProducts.find((p) => p.productoId === idProduct);
+    const product = this.listProducts.find((p) => p.idProducto === idProduct);
     if (product) {
-      product.quantity = quantity;
+      // product.productoy = quantity;
     }
   }
 

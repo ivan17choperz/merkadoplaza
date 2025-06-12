@@ -6,7 +6,7 @@
     {
     <li class="p-3 rounded shadow-sm border border-gray-200 relative mt-3">
       <button
-        (click)="deleteProduct(product.productoId)"
+        (click)="deleteProduct(product.idProducto!)"
         class="absolute -top-2 -right-1 p-4 rounded-full bg-white shadow-xl border border-gray-400"
       >
         <i>
@@ -46,37 +46,30 @@
 
       <div class="flex w-full">
         <div class="w-3/12 overflow-hidden flex items-center">
-          <img [src]="product.imagen" alt="img-product" />
+          <img [src]="product.producto?.imagen" alt="img-product" />
         </div>
         <div class="w-4/12 ms-2 flex items-start justify-center flex-col">
           <p class="capitalize font-bold text-base text-neutral-950 truncate">
-            {{ product.productoNombre }}
+            {{ product.producto?.nombre }}
           </p>
           <p class="capitalize font-normal text-sm text-gray-400 truncate">
-            {{ product.medidaNombre }}
+            {{ product?.producto?.idMedida }}
           </p>
         </div>
         <div
           class="w-5/12 ms-2 flex justify-center items-center overflow-hidden"
         >
-          @if (product.quantity) {
+          @if (product) {
           <button
-            [disabled]="product.quantity <= 1"
-            (click)="
-              updateQuantityProduct(product.productoId, product.quantity - 1)
-            "
             class="w-8 h-5 p-2 bg-green-600 text-white flex justify-center items-center font-bold"
           >
             -
           </button>
-          <span class="p-2 border border-green-600 text-green-600 mx-1">{{
-            product.quantity
-          }}</span>
+          <span class="p-2 border border-green-600 text-green-600 mx-1">
+            {{ 0 }}
+          </span>
 
           <button
-            (click)="
-              updateQuantityProduct(product.productoId, product.quantity + 1)
-            "
             class="w-8 h-5 p-2 bg-green-600 text-white flex justify-center items-center font-bold"
           >
             +

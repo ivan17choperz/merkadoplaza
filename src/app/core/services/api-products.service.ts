@@ -2,7 +2,10 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { map, Observable, tap } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { Datum, IResponseProducts } from '../interfaces/products.interface';
+import {
+  IResponseProducts,
+  ProductoEmpresa,
+} from '../interfaces/products.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -10,11 +13,11 @@ import { Datum, IResponseProducts } from '../interfaces/products.interface';
 export class ApiProductsService {
   private _httpClientService: HttpClient = inject(HttpClient);
 
-  private _productsVarios: Datum[] = [];
-  private _productsFrutas: Datum[] = [];
-  private _productsSemillas: Datum[] = [];
-  private _productsVegetales: Datum[] = [];
-  private _allProducts: Datum[] = [];
+  private _productsVarios: ProductoEmpresa[] = [];
+  private _productsFrutas: ProductoEmpresa[] = [];
+  private _productsSemillas: ProductoEmpresa[] = [];
+  private _productsVegetales: ProductoEmpresa[] = [];
+  private _allProducts: ProductoEmpresa[] = [];
 
   public getProducts(): Observable<IResponseProducts> {
     const headers = new HttpHeaders().append(
@@ -22,7 +25,7 @@ export class ApiProductsService {
       environment.key_api
     );
     return this._httpClientService
-      .get<IResponseProducts>(`${environment.base_url}/api/get_productos`, {
+      .get<IResponseProducts>(`${environment.base_url}/products`, {
         headers,
       })
       .pipe(
@@ -45,43 +48,27 @@ export class ApiProductsService {
   }
   public setProductIntoCategories() {
     this.getProducts().subscribe({
-      next: (res: IResponseProducts) => {
-        this._productsFrutas = res.data.filter(
-          (product) => product.categoriaNombre === 'FRUTAS'
-        );
-
-        this._productsSemillas = res.data.filter((product) =>
-          product.categoriaNombre.includes('SEMILLAS')
-        );
-
-        this._productsVegetales = res.data.filter((product) =>
-          product.categoriaNombre.includes('HORTALIZAS')
-        );
-
-        this._productsVarios = res.data.filter((product) =>
-          product.categoriaNombre.includes('VARIOS')
-        );
-      },
+      next: (res: IResponseProducts) => {},
     });
   }
 
-  public getProductsVarios(): Datum[] {
+  public getProductsVarios(): ProductoEmpresa[] {
     return this._productsVarios;
   }
 
-  public getProductsFrutas(): Datum[] {
+  public getProductsFrutas(): ProductoEmpresa[] {
     return this._productsFrutas;
   }
 
-  public getProductsSemillas(): Datum[] {
+  public getProductsSemillas(): ProductoEmpresa[] {
     return this._productsSemillas;
   }
 
-  public getProductsVegetales(): Datum[] {
+  public getProductsVegetales(): ProductoEmpresa[] {
     return this._productsVegetales;
   }
 
-  public getAllProducts(): Datum[] {
+  public getAllProducts(): ProductoEmpresa[] {
     return this._allProducts;
   }
 }

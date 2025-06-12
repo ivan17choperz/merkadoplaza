@@ -20,7 +20,7 @@ import {
   IonCardContent,
   IonImg,
 } from '@ionic/angular/standalone';
-import { Datum } from 'src/app/core/interfaces/products.interface';
+import { ProductoEmpresa } from 'src/app/core/interfaces/products.interface';
 import { CartListProductsService } from 'src/app/core/services/cart-list-products.service';
 
 const ionComponents = [
@@ -37,15 +37,13 @@ const ionComponents = [
   imports: [
     ReactiveFormsModule,
     CommonModule,
-    IonImg,
-    IonCardContent,
-    ...ionComponents,
+    // ...ionComponents,
   ],
   templateUrl: './product-card.component.html',
   styleUrl: './product-card.component.scss',
 })
 export class ProductCardComponent {
-  @Input() product: Datum | null = null;
+  @Input() product: ProductoEmpresa | null = null;
   private _fb: FormBuilder = inject(FormBuilder);
 
   private _cartListProductsService: CartListProductsService = inject(
@@ -57,10 +55,7 @@ export class ProductCardComponent {
 
   constructor() {
     this.countForm = this._fb.group({
-      quantity: [
-        this.product?.quantity,
-        [Validators.min(1), Validators.max(20)],
-      ],
+      quantity: [0, [Validators.min(1), Validators.max(20)]],
     });
   }
 
