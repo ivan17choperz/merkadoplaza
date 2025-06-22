@@ -1,7 +1,44 @@
 <div class="w-full h-full overflow-hidden p-5">
   <ul
     class="w-full row-span-1 min-h-[500px] max-h-[500px] overflow-y-scroll overflow-x-hidden mb-5"
-  ></ul>
+  >
+    @for (product of listProducts; track $index) {
+
+    <li
+      class="w-full p-3 flex justify-around border bg-white border-gray-300 gap-2 rounded-lg mb-5"
+    >
+      <img
+        [src]="product?.producto?.imagen"
+        class="rounded-lg h-20"
+        alt="img-product"
+        loading="lazy"
+      />
+      <div class="flex flex-col items-start justify-center">
+        <p class="text-black font-bold truncate">
+          {{ product?.producto?.nombre }}
+        </p>
+        <p class="text-gray-400 font-bold truncate">
+          {{ getMeasures(product.producto.idMedida ?? "") }} - ${{
+            product?.valor
+          }}
+        </p>
+        <p class="text-green-600 font-bold truncate">
+          Total: ${{ getTotalValue(product) }}
+        </p>
+      </div>
+      <div class="flex justify-center items-center">
+        <p class="p-5 rounded border">
+          <b class="text-gray-500">
+            {{ product?.quantity }}
+          </b>
+        </p>
+      </div>
+    </li>
+
+    }@empty {
+    <li>No hay productos en el carrito</li>
+    }
+  </ul>
 
   <div class="row-span-1 w-full p-5 border border-green-700 rounded">
     <form action="" class="text-green-700">
@@ -52,10 +89,12 @@
           *recuerda que los pedidos son apartir de compras mayores a 40.000$
         </span>
         <button
-          class="flex flex-col items-center justify-centertext-center rounded shadow bg-green-700 text-white font-bold p-3 mt-3"
+          [ngClass]="{ 'opacity-50': totalListProducts < 40000 }"
+          [disabled]="totalListProducts < 40000"
+          class="flex flex-col items-center justify-center text-center rounded shadow bg-green-700 text-white font-bold p-3 mt-3"
         >
           <span>Realizar Pedido</span>
-          <span>$40.000</span>
+          <span>$ {{ totalListProducts }}</span>
         </button>
       </div>
     </form>

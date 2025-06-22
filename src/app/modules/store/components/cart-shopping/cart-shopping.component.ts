@@ -17,6 +17,7 @@ import {
 import { addIcons } from 'ionicons';
 import { addCircleOutline, removeCircleOutline } from 'ionicons/icons';
 import { ProductoEmpresa } from 'src/app/core/interfaces/products.interface';
+import { ApiProductsService } from 'src/app/core/services/api-products.service';
 import { CartListProductsService } from 'src/app/core/services/cart-list-products.service';
 
 @Component({
@@ -30,7 +31,12 @@ import { CartListProductsService } from 'src/app/core/services/cart-list-product
 export class CartShoppingComponent implements OnInit {
   // public listProducts = signal<ProductoEmpresa[]>([]);
 
-  constructor(private _cartListServices: CartListProductsService) {
+  measures = signal<{ idMedida: string; nombre: string }[]>([]);
+
+  constructor(
+    private _cartListServices: CartListProductsService,
+    private _apiProductService: ApiProductsService
+  ) {
     addIcons({
       addCircleOutline,
       removeCircleOutline,
@@ -38,11 +44,31 @@ export class CartShoppingComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    throw new Error('Method not implemented.');
+    this._getMeasures();
   }
 
   get listProducts() {
     return this._cartListServices.showListProducts();
+  }
+
+  private _getMeasures(): void {
+    this._apiProductService.getMeasures().subscribe({
+      next: (res) => {
+        this.measures.set(res);
+      },
+    });
+  }
+
+  getMeasures(id: string): string {
+    return this.measures().find((m) => m.idMedida === id)?.nombre || '';
+  }
+
+  getTotalValue(product: ProductoEmpresa): number {
+    return parseFloat(product.valor) * (product.quantity || 0);
+  }
+
+  get totalListProducts(): number {
+    return this._cartListServices.totalPrices();
   }
 
   public updateQuantityProduct(idProduct: string, quantity: number): void {}

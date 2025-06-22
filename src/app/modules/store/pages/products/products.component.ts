@@ -67,7 +67,6 @@ export default class ProductsComponent implements OnInit {
   private _getMeasures(): void {
     this._apiProductService.getMeasures().subscribe({
       next: (res) => {
-        console.log(res);
         this.measures.set(res);
       },
     });
