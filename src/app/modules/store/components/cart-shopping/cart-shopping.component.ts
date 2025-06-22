@@ -4,6 +4,8 @@ import {
   Component,
   inject,
   OnInit,
+  signal,
+  Signal,
 } from '@angular/core';
 import {
   IonTitle,
@@ -26,12 +28,9 @@ import { CartListProductsService } from 'src/app/core/services/cart-list-product
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CartShoppingComponent implements OnInit {
-  private _cartListServices: CartListProductsService = inject(
-    CartListProductsService
-  );
+  // public listProducts = signal<ProductoEmpresa[]>([]);
 
-  public listProducts: ProductoEmpresa[] = [];
-  constructor() {
+  constructor(private _cartListServices: CartListProductsService) {
     addIcons({
       addCircleOutline,
       removeCircleOutline,
@@ -39,23 +38,14 @@ export class CartShoppingComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this._cartListServices.listProducts$.subscribe({
-      next: (products) => {
-        this.listProducts = products;
-        console.log(products);
-      },
-      error: (err) => console.log(err),
-    });
+    throw new Error('Method not implemented.');
   }
 
-  public updateQuantityProduct(idProduct: string, quantity: number): void {
-    const product = this.listProducts.find((p) => p.idProducto === idProduct);
-    if (product) {
-      // product.productoy = quantity;
-    }
+  get listProducts() {
+    return this._cartListServices.showListProducts();
   }
 
-  public deleteProduct(idProduct: string): void {
-    this._cartListServices.removeProduct(idProduct);
-  }
+  public updateQuantityProduct(idProduct: string, quantity: number): void {}
+
+  public deleteProduct(idProduct: string): void {}
 }

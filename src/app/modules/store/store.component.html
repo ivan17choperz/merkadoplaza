@@ -14,7 +14,7 @@
           <div class="flex items-center justify-end">
             <div class="mr-3">
               <p class="text-lg font-bold text-gray-400">
-                {{ currentTotalPrice | currency : "COP" : "symbol-narrow" }}
+                {{ totalPrice | currency : "COP" : "symbol-narrow" }}
               </p>
             </div>
             <div class="">
@@ -25,7 +25,7 @@
                 <span
                   class="absolute bottom-0 -right-1 z-50 flex items-center justify-center text-white bg-green-600 rounded-full w-5 h-5 text-sm"
                 >
-                  {{ numberProductsIntoCart }}
+                  {{ totalListProducts }}
                 </span>
                 <ion-icon name="cart" size="large"></ion-icon>
               </button>

@@ -22,14 +22,6 @@ import {
   IonGrid,
   IonCol,
   IonRow,
-  IonAvatar,
-  IonFab,
-  IonFabButton,
-  IonActionSheet,
-  IonTabBar,
-  IonTabButton,
-  IonTabs,
-  IonLabel,
   IonModal,
   IonToast,
 } from '@ionic/angular/standalone';
@@ -104,24 +96,16 @@ export default class StoreComponent implements OnInit {
     });
   }
 
+  get totalPrice(): number {
+    return this._cartListServices.totalPrices();
+  }
+  get totalListProducts(): number {
+    return this._cartListServices.showListProducts().length;
+  }
+
   async ngOnInit(): Promise<void> {
-    this._cartListServices.countProducts$.subscribe((res) => {
-      this.numberProductsIntoCart = res;
-    });
-
-    this._cartListServices.showToastProductExist$.subscribe((res) => {
-      this.showToastProductExist = res.show;
-      this.messageToast = res.message;
-      //console.log(this.showToastProductExist, this.messageToast);
-    });
-
-    this._cartListServices.totalPrice$.subscribe((res) => {
-      this.currentTotalPrice = res;
-    });
-
     const info = await this._storeService.getData('current_user');
 
-    console.log(info);
     this.userInfo.set(info);
   }
 

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { computed, Injectable, signal } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { ProductoEmpresa } from '../interfaces/products.interface';
 
@@ -6,44 +6,54 @@ import { ProductoEmpresa } from '../interfaces/products.interface';
   providedIn: 'root',
 })
 export class CartListProductsService {
-  private showToastProductExist: BehaviorSubject<{
-    show: boolean;
-    message: string;
-  }> = new BehaviorSubject<{ show: boolean; message: string }>({
-    show: false,
-    message: '',
-  });
-  public showToastProductExist$ = this.showToastProductExist.asObservable();
+  private _listProducts = signal<ProductoEmpresa[]>([]);
+  public showListProducts = computed(() => this._listProducts());
+  private _totalPrices = signal<number>(0);
+  public totalPrices = computed(() => this._totalPrices());
 
-  private _totalPrice: BehaviorSubject<number> = new BehaviorSubject<number>(0);
-  public totalPrice$ = this._totalPrice.asObservable();
+  public addProduct(product: ProductoEmpresa) {
+    this._listProducts.update((currentProducts) => {
+      const existingIndex = currentProducts.findIndex(
+        (p) => p.idProducto === product.idProducto
+      );
 
-  private _countProducts: BehaviorSubject<number> = new BehaviorSubject<number>(
-    0
-  );
-  public countProducts$ = this._countProducts.asObservable();
+      if (existingIndex >= 0) {
+        // Clone array and update existing product
+        const updatedProducts = [...currentProducts];
+        updatedProducts[existingIndex] = {
+          ...updatedProducts[existingIndex],
+          quantity: product.quantity,
+        };
+        return updatedProducts;
+      }
+      // Add new product
+      return [...currentProducts, product];
+    });
+    this._totalPrices.update(() => this._calculateTotal());
+  }
 
-  private listProducts: BehaviorSubject<ProductoEmpresa[]> =
-    new BehaviorSubject<ProductoEmpresa[]>([]);
-  public listProducts$ = this.listProducts.asObservable();
+  public removeProduct(id: string) {
+    this._listProducts.update((currentProducts) => {
+      const updatedProducts = currentProducts.filter(
+        (product) => product.idProducto !== id
+      );
+      return updatedProducts;
+    });
+    this._totalPrices.update(() => this._calculateTotal());
+  }
 
-  public addProduct(product: ProductoEmpresa) {}
-  public removeProduct(id: any) {}
-
-  private _quantityProductsIntoCart(number: number) {}
-
-  public clearProducts() {}
+  public clearProducts() {
+    this._listProducts.update(() => []);
+    this._totalPrices.update(() => 0);
+  }
 
   public verifyListProducts() {}
 
-  public getTotalPrices(arrayPrices: any): void {}
-
-  //TODO: Messages and toasts
-  public setShowToastProductExist(show: boolean, message: string) {
-    this.showToastProductExist.next({ show, message });
-
-    setTimeout(() => {
-      this.showToastProductExist.next({ show: false, message: '' });
-    }, 2000);
+  private _calculateTotal(): number {
+    return this._listProducts().reduce(
+      (total, product) =>
+        total + parseFloat(product.valor) * (product.quantity || 0),
+      0
+    );
   }
 }

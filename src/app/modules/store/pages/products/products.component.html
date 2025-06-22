@@ -10,13 +10,13 @@
         />
       </ion-col>
     </ion-row>
+
     <!-- input -->
     <ion-row class="">
       <ion-col size="12">
         <form class="w-full flex justify-center">
           <div class="form-control w-11/12">
             <ion-searchbar
-              
               placeholder="Buscar producto"
               inputmode="text"
               type="text"
@@ -28,73 +28,32 @@
         </form>
       </ion-col>
     </ion-row>
+
     <!-- categories -->
-    <ion-row class="mt-5" class="flex justify-center items-center">
+    <ion-row class="mt-5" class="flex justify-center items-start">
       <!-- cat-varios -->
+      @if (categories().length > 0) { @for (category of categories(); track
+      $index) {
       <ion-col size="3" class="flex flex-col justify-center items-center">
         <div
           class="rounded-full p-1 shadow-lg"
-          (click)="filterByCategory('varios')"
+          (click)="filterByCategory(category.idCategoria)"
         >
           <img
-            src="assets/imgs-categories/others-category.jpg"
-            alt="atleta-normal"
+            src="assets/imgs-categories/{{ category.idCategoria }}.jpg"
+            alt="img"
             class="rounded-full"
             width="50px"
             height="50px"
           />
         </div>
-        <p class="font-bold">Empacados</p>
+        <p class="font-bold text-center">
+          {{ category.nombre | titlecase }}
+        </p>
       </ion-col>
-      <!-- cat-frutas -->
-      <ion-col size="3" class="flex flex-col justify-center items-center">
-        <div
-          class="rounded-full p-1 shadow-lg"
-          (click)="filterByCategory('frutas')"
-        >
-          <img
-            src="assets/imgs-categories/fruits-category.jpg"
-            alt="atleta-normal"
-            class="rounded-full"
-            width="50px"
-            height="50px"
-          />
-        </div>
-        <p class="font-bold">Frutas</p>
-      </ion-col>
-      <!-- cat-semillas -->
-      <ion-col size="3" class="flex flex-col justify-center items-center">
-        <div
-          class="rounded-full p-1 shadow-lg"
-          (click)="filterByCategory('semillas')"
-        >
-          <img
-            src="assets/imgs-categories/nuts-and-seeds-category.jpg"
-            alt="atleta-normal"
-            class="rounded-full"
-            width="50px"
-            height="50px"
-          />
-        </div>
-        <p class="font-bold text-center">Semillas</p>
-      </ion-col>
-      <!-- cat-vegetales -->
-      <ion-col size="3" class="flex flex-col justify-center items-center">
-        <div
-          class="rounded-full p-1 shadow-lg"
-          (click)="filterByCategory('vegetales')"
-        >
-          <img
-            src="assets/imgs-categories/vegetales-category.jpg"
-            alt="atleta-normal"
-            class="rounded-full"
-            width="50px"
-            height="50px"
-          />
-        </div>
-        <p class="font-bold">Vegetales</p>
-      </ion-col>
+      } }
     </ion-row>
+
     <!-- products -->
     <ion-row class="">
       <ion-col size="12" class="flex justify-center">
@@ -102,8 +61,11 @@
         <div
           class="w-full grid grid-cols-1 gap-5 animate__animated animate__fadeIn pb-20"
         >
-          @for (product of products(); track $index) {
-          <app-product-card [product]="product" />
+          @for (product of filterProducts(); track $index) {
+          <app-product-card
+            [product]="product"
+            [medida]="getMeasures(product.producto.idMedida ?? '')"
+          />
           }
         </div>
         }@else {
