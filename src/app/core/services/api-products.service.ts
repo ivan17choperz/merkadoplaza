@@ -8,6 +8,7 @@ import {
 } from '../interfaces/products.interface';
 import { IResponseCategories } from '../interfaces/categories';
 import { IResponseMeasure } from '../interfaces/measure';
+import { Delivery } from '../interfaces/delivery';
 
 @Injectable({
   providedIn: 'root',
@@ -67,5 +68,12 @@ export class ApiProductsService {
           }));
         })
       );
+  }
+
+  public createDelivery(delivery: Delivery) {
+    return this._httpClientService.post(
+      `${environment.base_url}/generate-delivery`,
+      delivery
+    );
   }
 }

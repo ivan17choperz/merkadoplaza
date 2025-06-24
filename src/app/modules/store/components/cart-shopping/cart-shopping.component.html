@@ -5,7 +5,7 @@
     @for (product of listProducts; track $index) {
 
     <li
-      class="w-full p-3 flex justify-around border bg-white border-gray-300 gap-2 rounded-lg mb-5"
+      class="w-full p-3 flex justify-between border bg-white border-gray-300 gap-2 rounded-lg mb-5"
     >
       <img
         [src]="product?.producto?.imagen"
@@ -28,7 +28,7 @@
       </div>
       <div class="flex justify-center items-center">
         <p class="p-5 rounded border">
-          <b class="text-gray-500">
+          <b class="text-gray-500 text-lg">
             {{ product?.quantity }}
           </b>
         </p>
@@ -41,45 +41,54 @@
   </ul>
 
   <div class="row-span-1 w-full p-5 border border-green-700 rounded">
-    <form action="" class="text-green-700">
+    <div action="" class="text-green-700">
       <h2 class="text-2xl font-bold">Realizar pedido</h2>
       <div class="form-control flex flex-col mt-3">
         <label class="font-semibold">Dia de Entrega:</label>
         <select
-          name=""
-          id=""
+          [formControl]="dayDelivery"
           class="w-full px-1 py-2 mt-2 rounded-xl border border-gray-400"
         >
-          <option value="">Domingo</option>
-          <option value="">Martes</option>
-          <option value="">Miercoles</option>
-          <option value="">Jueves</option>
-          <option value="">Viernes</option>
-          <option value="">Sabado</option>
+          <option value="lunes">Lunes</option>
+          <option value="martes">Martes</option>
+          <option value="miercoles">Miercoles</option>
+          <option value="jueves">Jueves</option>
+          <option value="viernes">Viernes</option>
+          <option value="sabado">Sabado</option>
+          <option value="domingo">Domingo</option>
         </select>
       </div>
       <div class="form-control flex flex-col mt-5">
         <label class="font-semibold">Horario de entrega:</label>
         <select
-          name=""
-          id=""
           class="w-full px-1 py-2 mt-2 rounded-xl border border-gray-400"
+          [formControl]="hourDelivery"
         >
-          <option value="">8:00AM - 12:00PM</option>
-          <option value="">12:00PM - 2:00PM</option>
-          <option value="">2:00PM - 6:00PM</option>
+          <option value=" 8:00AM - 12:00PM">8:00AM - 12:00PM</option>
+          <option value=" 12:00PM - 2:00PM">12:00PM - 2:00PM</option>
+          <option value=" 2:00PM - 6:00PM">2:00PM - 6:00PM</option>
         </select>
       </div>
       <div class="form-control flex flex-col mt-5">
         <label class="font-semibold">Quien recibe:</label>
         <input
+          [formControl]="recipient"
           type="text"
           class="w-full px-1 py-2 mt-2 rounded-xl border border-gray-400"
         />
       </div>
       <div class="form-control flex flex-col mt-5">
+        <label class="font-semibold">Detalles del pedido:</label>
+        <textarea
+          [formControl]="detail"
+          type="text"
+          class="w-full px-1 py-2 mt-2 rounded-xl border border-gray-400"
+        ></textarea>
+      </div>
+      <div class="form-control flex flex-col mt-5">
         <label class="font-semibold">Teléfono:</label>
         <input
+          [formControl]="phone"
           type="number"
           class="w-full px-1 py-2 mt-2 rounded-xl border border-gray-400"
         />
@@ -89,6 +98,7 @@
           *recuerda que los pedidos son apartir de compras mayores a 40.000$
         </span>
         <button
+          (click)="saveDelivery()"
           [ngClass]="{ 'opacity-50': totalListProducts < 40000 }"
           [disabled]="totalListProducts < 40000"
           class="flex flex-col items-center justify-center text-center rounded shadow bg-green-700 text-white font-bold p-3 mt-3"
@@ -97,6 +107,6 @@
           <span>$ {{ totalListProducts }}</span>
         </button>
       </div>
-    </form>
+    </div>
   </div>
 </div>
