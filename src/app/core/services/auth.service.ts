@@ -1,44 +1,42 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
-import { lastValueFrom } from 'rxjs';
+import { inject, Injectable, signal } from '@angular/core';
+import { lastValueFrom, Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
+  private url = signal(environment.base_url);
+
   private _http: HttpClient = inject(HttpClient);
 
-  public async login(credetials: {
+  public login(credentials: {
     email: string;
     password: string;
-  }): Promise<any> {
-    const headers = new HttpHeaders().append(
-      'Authorization',
-      environment.key_api
-    );
-
-    const formdata = new FormData();
-    formdata.append('email', credetials.email);
-    formdata.append('password', credetials.password);
-
-    return await lastValueFrom(
-      this._http.post(`http://localhost/mdp/api/login`, formdata, {
-        headers,
-      })
-    );
+  }): Observable<any> {
+    return this._http.post(`${this.url()}/login`, credentials);
   }
 
   public async register(dataUser: any): Promise<any> {
-    const headers = new HttpHeaders().append(
-      'Authorization',
-      environment.key_api
+    return await lastValueFrom(
+      this._http.post(`${environment.base_url}/register`, dataUser)
+    );
+  }
+
+  public async getDepartments(): Promise<any> {
+    const data = await lastValueFrom(
+      this._http.get(`${environment.base_url}/departments`)
     );
 
-    return await lastValueFrom(
-      this._http.post(`${environment.base_url}/api/login`, dataUser, {
-        headers,
-      })
+    return data;
+  }
+
+  public async getCities(): Promise<any> {
+    const data = await lastValueFrom(
+      this._http.get(`${environment.base_url}/cities`)
     );
+
+    return data;
   }
 }

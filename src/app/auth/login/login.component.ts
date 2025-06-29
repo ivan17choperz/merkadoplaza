@@ -50,27 +50,25 @@ export default class LoginComponent {
     });
   }
 
-  public async login(): Promise<void> {
-    // if (this.loginForm.invalid) {
-    //   return;
-    // }
+  public login() {
+    if (this.loginForm.invalid) {
+      return;
+    }
 
-    // this.loading.set(true);
-    // const { data, error, status } = await this._authServices.login(
-    //   this.loginForm.value
-    // );
+    this.loading.set(true);
 
-    // if (status == 'error') {
-    //   this.showToastErrorMsg.set(true);
-    //   this.msgError.set(data.error);
-    //   this.loading.set(false);
-    //   return;
-    // }
-
-    // if (!data || data == undefined) return;
-
-    // this.storeServices.saveData('current_user', data);
-
-    this._router.navigateByUrl('modules/store');
+    this._authServices.login(this.loginForm.value).subscribe({
+      next: (res) => {
+        this.loading.set(false);
+        console.log(res.data);
+        this.storeServices.saveData('current_user', res.data);
+        this._router.navigateByUrl('modules/store');
+      },
+      error: (err) => {
+        this.loading.set(false);
+        this.showToastErrorMsg.set(true);
+        this.msgError.set(err.error.message);
+      },
+    });
   }
 }
