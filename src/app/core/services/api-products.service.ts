@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
-import { map, Observable, tap } from 'rxjs';
+import { lastValueFrom, map, Observable, tap } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import {
   IResponseProducts,
@@ -9,6 +9,10 @@ import {
 import { IResponseCategories } from '../interfaces/categories';
 import { IResponseMeasure } from '../interfaces/measure';
 import { Delivery } from '../interfaces/delivery';
+import {
+  ResponseDeliveriesUser,
+  DeliveryCreated,
+} from '../interfaces/responses/store/search-delivery';
 
 @Injectable({
   providedIn: 'root',
@@ -74,6 +78,16 @@ export class ApiProductsService {
     return this._httpClientService.post(
       `${environment.base_url}/generate-delivery`,
       delivery
+    );
+  }
+
+  async getDeliveriesByUser(idUser: string): Promise<DeliveryCreated[]> {
+    return await lastValueFrom(
+      this._httpClientService
+        .get<ResponseDeliveriesUser>(
+          `${environment.base_url}/deliveries/user/${idUser}`
+        )
+        .pipe(map((res) => res.data))
     );
   }
 }

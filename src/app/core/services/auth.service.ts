@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { lastValueFrom, Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { ResponseUser } from '../interfaces/responses/auth/search-user';
 
 @Injectable({
   providedIn: 'root',
@@ -38,5 +39,11 @@ export class AuthService {
     );
 
     return data;
+  }
+
+  public async getUserById(id: string): Promise<ResponseUser> {
+    return await lastValueFrom(
+      this._http.get<ResponseUser>(`${environment.base_url}/users/${id}`)
+    );
   }
 }

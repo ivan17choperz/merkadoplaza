@@ -24,6 +24,7 @@ import {
   IonRow,
   IonModal,
   IonToast,
+  ModalController,
 } from '@ionic/angular/standalone';
 
 import { addIcons } from 'ionicons';
@@ -39,6 +40,9 @@ import { CartShoppingComponent } from './components/cart-shopping/cart-shopping.
 import { CartListProductsService } from 'src/app/core/services/cart-list-products.service';
 import { StoreService } from 'src/app/core/services/store.service';
 import { ICurrentUser } from 'src/app/core/interfaces/user.interface';
+import { ModalUserComponent } from './components/modal-user/modal-user.component';
+import { AuthService } from 'src/app/core/services/auth.service';
+import { User } from 'src/app/core/interfaces/responses/auth/search-user';
 
 const ionComponents = [
   IonTitle,
@@ -77,16 +81,17 @@ export default class StoreComponent implements OnInit {
   public showToastProductExist: boolean = false;
   public messageToast: string = '';
   public currentTotalPrice: number = 0;
-  private _cartListServices: CartListProductsService = inject(
-    CartListProductsService
-  );
-  private _storeService: StoreService = inject(StoreService);
 
   public numberProductsIntoCart: number = 0;
 
-  public userInfo = signal<ICurrentUser | null>(null);
+  public userInfo = signal<User | null>(null);
 
-  constructor() {
+  constructor(
+    private modalCtrl: ModalController,
+    private _storeService: StoreService,
+    private authService: AuthService,
+    private _cartListServices: CartListProductsService
+  ) {
     addIcons({
       settingsOutline,
       personCircleOutline,
@@ -94,6 +99,8 @@ export default class StoreComponent implements OnInit {
       cart,
       closeCircleOutline,
     });
+
+    this.getInfoUser();
   }
 
   get totalPrice(): number {
@@ -115,5 +122,37 @@ export default class StoreComponent implements OnInit {
 
   public handleScroll(ev: CustomEvent<any>) {
     console.log('scroll', JSON.stringify(ev.detail));
+  }
+
+  async showModalUser() {
+    const modal = await this.modalCtrl.create({
+      component: ModalUserComponent,
+      componentProps: {
+        userInfo: this.userInfo(),
+      },
+      showBackdrop: true,
+      canDismiss: true,
+    });
+
+    modal.onWillDismiss().then((res) => {
+      if (res.role === 'cancel') {
+        // this.showModalUser.set(false);
+      }
+    });
+
+    await modal.present();
+  }
+
+  async getInfoUser() {
+    try {
+      const info = await this._storeService.getData('current_user');
+      console.log(info);
+      const { data, status } = await this.authService.getUserById(info.user_id);
+
+      if (status == 'success') {
+        console.log(data);
+        this.userInfo.set(data);
+      }
+    } catch (error) {}
   }
 }

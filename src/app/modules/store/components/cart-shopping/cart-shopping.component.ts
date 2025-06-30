@@ -20,6 +20,7 @@ import { addCircleOutline, removeCircleOutline } from 'ionicons/icons';
 import { ProductoEmpresa } from 'src/app/core/interfaces/products.interface';
 import { ApiProductsService } from 'src/app/core/services/api-products.service';
 import { CartListProductsService } from 'src/app/core/services/cart-list-products.service';
+import { StoreService } from 'src/app/core/services/store.service';
 
 @Component({
   selector: 'app-cart-shopping',
@@ -51,7 +52,8 @@ export class CartShoppingComponent implements OnInit {
 
   constructor(
     private _cartListServices: CartListProductsService,
-    private _apiProductService: ApiProductsService
+    private _apiProductService: ApiProductsService,
+    private _storeService: StoreService
   ) {
     addIcons({
       addCircleOutline,
@@ -91,35 +93,41 @@ export class CartShoppingComponent implements OnInit {
 
   public deleteProduct(idProduct: string): void {}
 
-  saveDelivery(): void {
-    const dataToSave = {
-      idEmpresa: 3,
-      idUsuario: 1, //this data recept to api
-      fechaEntrega: this.parseDate(this.dateDelivery.value ?? ''),
-      recibe: this.recipient.value ?? '',
-      telefono: this.phone.value ?? '',
-      detalle: this.detail.value ?? '',
-      diaEntrega: this.dayDelivery.value ?? '',
-      hora: this.hourDelivery.value ?? '',
-      items: this.listProducts.map((p) => {
-        return {
-          idProductoEmpresa: parseInt(p.idProductoEmpresa),
-          cantidad: p.quantity,
-          valor: parseFloat(p.valor),
-        };
-      }),
-    };
+  async saveDelivery(): Promise<void> {
+    const currentUser = await this._storeService.getData('current_user');
 
-    const totalDelivery = parseFloat(
-      dataToSave.items
-        .reduce((acc: number, item) => {
-          return acc + item.cantidad * item.valor;
-        }, 0)
-        .toFixed(2)
-    );
+    if (currentUser) {
+      const dataToSave = {
+        idEmpresa: 3,
+        idUsuario: currentUser.user_id ?? 1, //this data recept to api
+        fechaEntrega: this.parseDate(this.dateDelivery.value ?? ''),
+        recibe: this.recipient.value ?? '',
+        telefono: this.phone.value ?? '',
+        detalle: this.detail.value ?? '',
+        diaEntrega: this.dayDelivery.value ?? '',
+        hora: this.hourDelivery.value ?? '',
+        items: this.listProducts.map((p) => {
+          return {
+            idProductoEmpresa: parseInt(p.idProductoEmpresa),
+            cantidad: p.quantity,
+            valor: parseFloat(p.valor),
+          };
+        }),
+      };
 
-    if (totalDelivery >= 40000) {
-      this._apiProductService.createDelivery(dataToSave).subscribe(console.log);
+      const totalDelivery = parseFloat(
+        dataToSave.items
+          .reduce((acc: number, item) => {
+            return acc + item.cantidad * item.valor;
+          }, 0)
+          .toFixed(2)
+      );
+
+      if (totalDelivery >= 40000) {
+        this._apiProductService
+          .createDelivery(dataToSave)
+          .subscribe(console.log);
+      }
     }
   }
 
