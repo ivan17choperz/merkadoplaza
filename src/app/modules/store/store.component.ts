@@ -112,8 +112,8 @@ export default class StoreComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     const info = await this._storeService.getData('current_user');
-
     this.userInfo.set(info);
+    console.log(this.userInfo());
   }
 
   public scrollTop(): void {
@@ -146,13 +146,14 @@ export default class StoreComponent implements OnInit {
   async getInfoUser() {
     try {
       const info = await this._storeService.getData('current_user');
-      console.log(info);
       const { data, status } = await this.authService.getUserById(info.user_id);
 
       if (status == 'success') {
         console.log(data);
         this.userInfo.set(data);
       }
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   }
 }

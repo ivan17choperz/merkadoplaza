@@ -5,6 +5,7 @@ export interface ResponseUser {
 }
 
 export interface User {
+  user_id: string;
   nombre: string;
   apellido: string;
   email: string;
