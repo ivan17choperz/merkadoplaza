@@ -1,12 +1,4 @@
-import {
-  Component,
-  inject,
-  Input,
-  input,
-  OnInit,
-  output,
-  signal,
-} from '@angular/core';
+import { Component, Input, OnInit, signal } from '@angular/core';
 import { StoreService } from 'src/app/core/services/store.service';
 import {
   IonContent,
@@ -18,7 +10,6 @@ import {
   IonIcon,
   ModalController,
   IonItem,
-  IonLabel,
   IonList,
   IonCardHeader,
   IonCardTitle,

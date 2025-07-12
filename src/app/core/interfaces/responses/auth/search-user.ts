@@ -11,4 +11,6 @@ export interface User {
   email: string;
   celular: string;
   telefono: string;
+  direccion: string;
+  barrio: string;
 }

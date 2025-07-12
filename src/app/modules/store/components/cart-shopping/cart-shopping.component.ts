@@ -4,12 +4,15 @@ import {
   Component,
   inject,
   OnInit,
+  Output,
+  output,
   signal,
   Signal,
 } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import {
   IonTitle,
+  AlertController,
   IonToolbar,
   IonFooter,
   IonContent,
@@ -25,22 +28,13 @@ import { StoreService } from 'src/app/core/services/store.service';
 @Component({
   selector: 'app-cart-shopping',
   standalone: true,
-  imports: [
-    IonIcon,
-    IonContent,
-    IonFooter,
-    IonToolbar,
-    IonTitle,
-    CommonModule,
-    ReactiveFormsModule,
-  ],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './cart-shopping.component.html',
   styleUrl: './cart-shopping.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CartShoppingComponent implements OnInit {
-  // public listProducts = signal<ProductoEmpresa[]>([]);
-
+  deliveryCreated = output<boolean>();
   measures = signal<{ idMedida: string; nombre: string }[]>([]);
 
   dayDelivery = new FormControl('');
@@ -53,7 +47,8 @@ export class CartShoppingComponent implements OnInit {
   constructor(
     private _cartListServices: CartListProductsService,
     private _apiProductService: ApiProductsService,
-    private _storeService: StoreService
+    private _storeService: StoreService,
+    private alertController: AlertController
   ) {
     addIcons({
       addCircleOutline,
@@ -124,9 +119,21 @@ export class CartShoppingComponent implements OnInit {
       );
 
       if (totalDelivery >= 40000) {
-        this._apiProductService
-          .createDelivery(dataToSave)
-          .subscribe(console.log);
+        this._apiProductService.createDelivery(dataToSave).subscribe({
+          next: (res) => {
+            if (res) {
+              this._cartListServices.clearProducts();
+              this.showAlertByDeliveryCreated();
+              this.resetFormControls();
+              this.emitDeliveryCreated();
+            } else {
+              console.error('Error al crear la pedido:', res);
+            }
+          },
+          error: (err) => {
+            console.error('Error al crear la pedido:', err);
+          },
+        });
       }
     }
   }
@@ -140,5 +147,28 @@ export class CartShoppingComponent implements OnInit {
           parseInt(dateParts[0])
         )
       : new Date();
+  }
+
+  async showAlertByDeliveryCreated() {
+    const alert = await this.alertController.create({
+      header: 'Pedido realizado',
+      message: 'Recuerda estar atento al telefono el dia de la entrega',
+      buttons: ['Entendido'],
+    });
+
+    await alert.present();
+  }
+
+  private resetFormControls(): void {
+    this.dayDelivery.setValue('');
+    this.hourDelivery.setValue('');
+    this.dateDelivery.setValue('');
+    this.recipient.setValue('');
+    this.phone.setValue('');
+    this.detail.setValue('');
+  }
+
+  private emitDeliveryCreated() {
+    this.deliveryCreated.emit(true);
   }
 }

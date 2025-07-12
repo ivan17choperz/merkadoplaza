@@ -46,4 +46,13 @@ export class AuthService {
       this._http.get<ResponseUser>(`${environment.base_url}/users/${id}`)
     );
   }
+
+  public async updateUser(id: string, dataUser: any): Promise<ResponseUser> {
+    return await lastValueFrom(
+      this._http.post<ResponseUser>(
+        `${environment.base_url}/update-user/${id}`,
+        dataUser
+      )
+    );
+  }
 }
