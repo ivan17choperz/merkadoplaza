@@ -42,6 +42,13 @@ export class CartListProductsService {
     this._totalPrices.update(() => this._calculateTotal());
   }
 
+  public getQuantityByID(productId: string): number {
+    const product = this._listProducts().find(
+      (p) => p.idProducto === productId
+    );
+    return product?.quantity ?? 0;
+  }
+
   public clearProducts() {
     this._listProducts.update(() => []);
     this._totalPrices.update(() => 0);
