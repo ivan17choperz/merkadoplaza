@@ -3,9 +3,9 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false,
-  // base_url: 'https://test.mercadodeplaza.com',
-  base_url: 'http://localhost/mdp/api',
+  production: true,
+  base_url: 'https://api.mercadodeplaza.com.co/api',
+  // base_url: 'http://localhost/mdp/api',
   key_api: 'mdp-api',
 };
 

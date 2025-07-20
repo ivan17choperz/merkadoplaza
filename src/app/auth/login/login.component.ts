@@ -12,11 +12,18 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { IonButton, IonToast } from '@ionic/angular/standalone';
+import {
+  IonButton,
+  IonToast,
+  IonInput,
+  IonInputPasswordToggle,
+} from '@ionic/angular/standalone';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { StoreService } from 'src/app/core/services/store.service';
+import { customEmailValidator } from 'src/app/core/validators/email.validator';
+import { strongPasswordValidator } from 'src/app/core/validators/password.validator';
 
-const ionicComponents = [IonButton];
+const ionicComponents = [IonInputPasswordToggle, IonInput];
 
 @Component({
   selector: 'app-login',
@@ -45,8 +52,11 @@ export default class LoginComponent {
   public loading = signal<boolean>(false);
   constructor() {
     this.loginForm = this._fb.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(4)]],
+      email: [
+        '',
+        [Validators.required, Validators.email, customEmailValidator()],
+      ],
+      password: ['', [Validators.required, strongPasswordValidator()]],
     });
   }
 

@@ -28,6 +28,10 @@ import {
 import { CreateUser } from 'src/app/core/interfaces/user.interface';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { StoreService } from 'src/app/core/services/store.service';
+import { customEmailValidator } from 'src/app/core/validators/email.validator';
+import { validNameValidator } from 'src/app/core/validators/names.validator';
+import { strongPasswordValidator } from 'src/app/core/validators/password.validator';
+import { colombianPhoneValidator } from 'src/app/core/validators/phone.validator';
 
 @Component({
   selector: 'app-register',
@@ -67,8 +71,8 @@ export default class RegisterComponent implements OnInit {
 
   constructor() {
     this.registerForm = this._fb.group({
-      nombre: ['', [Validators.required, Validators.minLength(2)]],
-      apellido: ['', [Validators.required, Validators.minLength(2)]],
+      nombre: ['', [Validators.required, validNameValidator()]],
+      apellido: ['', [Validators.required, validNameValidator()]],
       sexo: ['', [Validators.required]],
       fechaNacimiento: ['', [Validators.required]],
       tipoDocumento: ['', [Validators.required]],
@@ -76,10 +80,13 @@ export default class RegisterComponent implements OnInit {
       ciudad: ['', [Validators.required]],
       barrio: ['', [Validators.required]],
       direccion: ['', [Validators.required]],
-      celular: ['', [Validators.required]],
+      celular: ['', [Validators.required, colombianPhoneValidator()]],
       telefono: ['', [Validators.required]],
-      email: ['', [Validators.required, Validators.email]],
-      contraseña: ['', [Validators.required, Validators.minLength(8)]],
+      email: [
+        '',
+        [Validators.required, Validators.email, customEmailValidator()],
+      ],
+      contraseña: ['', [Validators.required, strongPasswordValidator()]],
     });
   }
 
