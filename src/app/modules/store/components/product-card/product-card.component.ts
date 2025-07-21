@@ -60,14 +60,12 @@ export class ProductCardComponent implements OnInit, OnChanges {
     this.setupQuantityListeners();
 
     if (this.product) {
-      console.log(this.product);
       this.currentQuantity.setValue(this.product?.quantity || 0);
     }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['product'] && this.product) {
-      // ✅ Trae la cantidad real del carrito
       const realQuantity = this._cartListProductsService.getQuantityByID(
         this.product.idProducto!
       );

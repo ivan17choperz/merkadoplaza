@@ -36,8 +36,11 @@
       $index) {
       <ion-col size="3" class="flex flex-col justify-center items-center">
         <div
-          class="rounded-full p-1 shadow-lg"
+          class="rounded-full p-1 shadow-lg border-4 transition-colors"
           (click)="filterByCategory(category.idCategoria)"
+          [ngClass]="{
+            'border-green-500 ' : currentCategory() === category.idCategoria,
+          }"
         >
           <img
             src="assets/imgs-categories/{{ category.idCategoria }}.jpg"
@@ -48,7 +51,7 @@
           />
         </div>
         <p class="font-bold text-center">
-          {{ category.nombre | titlecase }}
+          {{ category.nombre | uppercase }}
         </p>
       </ion-col>
       } }

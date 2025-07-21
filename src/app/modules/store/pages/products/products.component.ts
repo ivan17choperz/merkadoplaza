@@ -3,6 +3,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  computed,
   inject,
   OnInit,
   signal,
@@ -42,6 +43,8 @@ export default class ProductsComponent implements OnInit {
   public products = signal<ProductoEmpresa[]>([]);
   public filterProducts = signal<ProductoEmpresa[]>([]);
 
+  public currentCategory = signal('');
+
   ngOnInit(): void {
     this._setProducts();
     this._getCategories();
@@ -60,7 +63,8 @@ export default class ProductsComponent implements OnInit {
   private _getCategories(): void {
     this._apiProductService.getCategories().subscribe({
       next: (res) => {
-        this.categories.set(res);
+        console.log(res);
+        this.categories.set(res.data.categories);
       },
     });
   }
@@ -93,5 +97,6 @@ export default class ProductsComponent implements OnInit {
     this.filterProducts.set(
       this.products().filter((p) => p.producto.idCategoria == category)
     );
+    this.currentCategory.set(category);
   }
 }

@@ -34,25 +34,17 @@ export class ApiProductsService {
     );
   }
 
-  public getCategories(): Observable<
-    { idCategoria: string; nombre: string }[]
-  > {
+  public getCategories(): Observable<IResponseCategories> {
     const headers = new HttpHeaders().append(
       'Authorization',
       environment.key_api
     );
-    return this._httpClientService
-      .get<IResponseCategories>(`${environment.base_url}/categories`, {
+    return this._httpClientService.get<IResponseCategories>(
+      `${environment.base_url}/categories`,
+      {
         headers,
-      })
-      .pipe(
-        map((res) => {
-          return Object.entries(res.data.categories).map(([key, value]) => ({
-            idCategoria: key,
-            nombre: value,
-          }));
-        })
-      );
+      }
+    );
   }
 
   public getMeasures(): Observable<{ idMedida: string; nombre: string }[]> {

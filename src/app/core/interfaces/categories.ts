@@ -4,5 +4,10 @@ export interface IResponseCategories {
 }
 
 export interface Data {
-  categories: { [key: string]: string };
+  categories: Category[];
+}
+
+export interface Category {
+  idCategoria: string;
+  nombre: string;
 }
