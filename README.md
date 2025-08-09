@@ -7,3 +7,7 @@ Para empezar a instalar las dependencias de desarrollo:
 ```
 npm install 
 ```
+Para correr el proyecto 
+```
+ionic serve  
+```
