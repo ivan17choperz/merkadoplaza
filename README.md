@@ -11,3 +11,5 @@ Para correr el proyecto
 ```
 ionic serve  
 ```
+### Nota 
+Cambiar el modo Dev en el archivo de envirotment
