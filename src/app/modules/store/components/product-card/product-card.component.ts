@@ -4,9 +4,14 @@ import {
   Component,
   inject,
   Input,
+  OnChanges,
+  OnInit,
+  signal,
+  SimpleChanges,
 } from '@angular/core';
 import {
   FormBuilder,
+  FormControl,
   FormGroup,
   ReactiveFormsModule,
   Validators,
@@ -17,9 +22,8 @@ import {
   IonCardSubtitle,
   IonCardHeader,
   IonCardTitle,
-  IonCardContent,
-  IonImg,
 } from '@ionic/angular/standalone';
+
 import { ProductoEmpresa } from 'src/app/core/interfaces/products.interface';
 import { CartListProductsService } from 'src/app/core/services/cart-list-products.service';
 
@@ -42,79 +46,98 @@ const ionComponents = [
   templateUrl: './product-card.component.html',
   styleUrl: './product-card.component.scss',
 })
-export class ProductCardComponent {
+export class ProductCardComponent implements OnInit, OnChanges {
   @Input() product: ProductoEmpresa | null = null;
-  private _fb: FormBuilder = inject(FormBuilder);
+  @Input() medida: string = '';
 
   private _cartListProductsService: CartListProductsService = inject(
     CartListProductsService
   );
 
-  public countForm!: FormGroup;
-  public quantityProduct: number = 0;
+  currentQuantity = new FormControl<number | null>(null);
 
-  constructor() {
-    this.countForm = this._fb.group({
-      quantity: [0, [Validators.min(1), Validators.max(20)]],
+  ngOnInit() {
+    this.setupQuantityListeners();
+
+    if (this.product) {
+      this.currentQuantity.setValue(this.product?.quantity || 0);
+    }
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['product'] && this.product) {
+      const realQuantity = this._cartListProductsService.getQuantityByID(
+        this.product.idProducto!
+      );
+      this.currentQuantity.setValue(realQuantity, { emitEvent: false });
+    }
+  }
+
+  private setupQuantityListeners() {
+    this.currentQuantity.valueChanges.subscribe((value) => {
+      if (value === null || value < 0) {
+        this.currentQuantity.setValue(0, { emitEvent: false });
+        return;
+      }
+      this.updateCartQuantity();
     });
   }
 
-  public addProductIntoCart(product: any) {
-    if (!product) {
-      return;
+  addQty() {
+    const newQuantity = this.currentQuantity.value! + 1;
+    this.currentQuantity.setValue(newQuantity, { emitEvent: false });
+    this.updateCartQuantity();
+  }
+
+  lessQty() {
+    const currentValue = this.currentQuantity.value!;
+    if (currentValue <= 0) return;
+
+    const newQuantity = currentValue - 1;
+    this.currentQuantity.setValue(newQuantity, { emitEvent: false });
+    this.updateCartQuantity();
+  }
+
+  private updateCartQuantity() {
+    const quantity = this.currentQuantity.value!;
+
+    if (quantity === 0) {
+      this.removeProductFromCart();
+    } else if (quantity > 0) {
+      this.addProductIntoCart();
     }
-    this._cartListProductsService.addProduct(product);
   }
+  onInput(event: any) {
+    let value = event.target.value;
 
-  public updateCountProduct(product: any, target: any) {
-    let quantity = parseInt(target.value);
+    // Elimina ceros a la izquierda
+    if (value) {
+      value = value.replace(/^0+/, '');
 
-    if (quantity <= 0 || !quantity) return;
-
-    console.log(quantity);
-
-    let data = {
-      ...product,
-      quantity: quantity,
-      totalPrice: quantity * parseInt(product?.valor),
-    };
-
-    if (this.quantityProduct === quantity) {
-      this.quantityProduct = quantity;
-      return;
+      // Si el usuario borra todo, dejarlo vacío o 0
+      if (value === '') {
+        value = '0';
+      }
     }
 
-    //console.log('producto añadido al carrito', data);
+    // Actualiza el control SIN disparar doble evento
+    this.currentQuantity.setValue(Number(value), { emitEvent: false });
 
-    this.addProductIntoCart(data);
+    this.updateCartQuantity();
   }
+  private addProductIntoCart() {
+    if (!this.product) return;
 
-  public plusQuantity(product: any, number: number) {
-    if (this.quantityProduct < 0) return;
-    this.quantityProduct += number;
-    this.countForm.controls['quantity'].setValue(this.quantityProduct);
-
-    let data = {
-      ...product,
-      quantity: this.quantityProduct,
-      totalPrice: this.quantityProduct * parseInt(product?.valor),
+    const productToAdd: ProductoEmpresa = {
+      ...this.product,
+      quantity: this.currentQuantity.value!,
     };
 
-    this.addProductIntoCart(data);
-    //console.log('producto quitado del carrito', data);
+    this._cartListProductsService.addProduct(productToAdd);
   }
 
-  public lessQuantity(product: any, number: number) {
-    if (this.quantityProduct <= 0) return;
-    this.quantityProduct -= number;
-    this.countForm.controls['quantity'].setValue(this.quantityProduct);
-
-    let data = {
-      ...product,
-      quantity: this.quantityProduct,
-      totalPrice: this.quantityProduct * parseInt(product?.valor),
-    };
-    this.addProductIntoCart(data);
-    //console.log('producto quitado del carrito', data);
+  private removeProductFromCart() {
+    if (!this.product) return;
+    this._cartListProductsService.removeProduct(this.product.idProducto!);
   }
 }

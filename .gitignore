@@ -70,3 +70,7 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+
+
+# Keys App
+key-mdp-app.jks

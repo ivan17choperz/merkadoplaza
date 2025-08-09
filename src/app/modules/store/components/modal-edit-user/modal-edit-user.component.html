@@ -1,0 +1,88 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-grid fixed>
+      <ion-row>
+        <ion-col size="10">
+          <ion-title>Editar Usuario</ion-title>
+        </ion-col>
+        <ion-col size="2">
+          <button (click)="closeModal()">
+            <ion-icon name="close-circle-outline" size="large" />
+          </button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-title>
+    <h2 class="ion-text-center">Editar Información de Usuario</h2>
+  </ion-title>
+
+  <form class="mt-10" [formGroup]="formUpdateUser">
+    <ion-item class="mt-5">
+      <ion-input
+        label="Nombre:"
+        label-placement="floating"
+        fill="outline"
+        formControlName="nombre"
+      />
+    </ion-item>
+
+    <ion-item class="mt-5">
+      <ion-input
+        label="Apellido :"
+        label-placement="floating"
+        fill="outline"
+        formControlName="apellido"
+      />
+    </ion-item>
+
+    <ion-item class="mt-5">
+      <ion-input
+        label="Celular :"
+        label-placement="floating"
+        fill="outline"
+        formControlName="celular"
+      />
+    </ion-item>
+
+    <ion-item class="mt-5">
+      <ion-input
+        label="Dirreccion:"
+        label-placement="floating"
+        fill="outline"
+        formControlName="direccion"
+      />
+    </ion-item>
+
+    <ion-item class="mt-5">
+      <ion-input
+        label="Email :"
+        label-placement="floating"
+        fill="outline"
+        formControlName="email"
+      />
+    </ion-item>
+
+    <ion-item class="mt-5">
+      <ion-input
+        label="Contraseña :"
+        label-placement="floating"
+        fill="outline"
+        formControlName="contrasena"
+      />
+    </ion-item>
+  </form>
+</ion-content>
+<ion-footer>
+  <ion-button
+    expand="full"
+    type="submit"
+    class="ion-padding"
+    (click)="updateUser()"
+  >
+    Guardar
+  </ion-button>
+</ion-footer>

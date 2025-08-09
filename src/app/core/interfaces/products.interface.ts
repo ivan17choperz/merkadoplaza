@@ -13,6 +13,7 @@ export interface ProductoEmpresa {
   maximo: string;
   indHabilitado: string;
   producto: Producto;
+  quantity: number;
 }
 
 export interface Producto {

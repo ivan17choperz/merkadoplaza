@@ -12,11 +12,18 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { IonButton, IonToast } from '@ionic/angular/standalone';
+import {
+  IonButton,
+  IonToast,
+  IonInput,
+  IonInputPasswordToggle,
+} from '@ionic/angular/standalone';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { StoreService } from 'src/app/core/services/store.service';
+import { customEmailValidator } from 'src/app/core/validators/email.validator';
+import { strongPasswordValidator } from 'src/app/core/validators/password.validator';
 
-const ionicComponents = [IonButton];
+const ionicComponents = [IonInputPasswordToggle, IonInput];
 
 @Component({
   selector: 'app-login',
@@ -45,32 +52,33 @@ export default class LoginComponent {
   public loading = signal<boolean>(false);
   constructor() {
     this.loginForm = this._fb.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(4)]],
+      email: [
+        '',
+        [Validators.required, Validators.email, customEmailValidator()],
+      ],
+      password: ['', [Validators.required, strongPasswordValidator()]],
     });
   }
 
-  public async login(): Promise<void> {
+  public login() {
     if (this.loginForm.invalid) {
       return;
     }
 
     this.loading.set(true);
-    const { data, error, status } = await this._authServices.login(
-      this.loginForm.value
-    );
 
-    if (status == 'error') {
-      this.showToastErrorMsg.set(true);
-      this.msgError.set(data.error);
-      this.loading.set(false);
-      return;
-    }
-
-    if (!data || data == undefined) return;
-
-    this.storeServices.saveData('current_user', data);
-
-    this._router.navigateByUrl('modules/store');
+    this._authServices.login(this.loginForm.value).subscribe({
+      next: (res) => {
+        this.loading.set(false);
+        console.log(res.data);
+        this.storeServices.saveData('current_user', res.data);
+        this._router.navigateByUrl('modules/store');
+      },
+      error: (err) => {
+        this.loading.set(false);
+        this.showToastErrorMsg.set(true);
+        this.msgError.set(err.error.message);
+      },
+    });
   }
 }

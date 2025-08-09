@@ -9,100 +9,137 @@
     >
       <div class="form-header flex flex-col justify-center items-center">
         <h3 class="font-bold text-4xl mt-2 text-green-800">Registrate Ahora</h3>
+        <h5 class="text-xl mt-2 text-green-800">
+          Asi podras realizar pedidos 😁
+        </h5>
       </div>
 
       <div class="form-control flex flex-col mt-8">
-        <label for="" class="text-lg">Nombre*:</label>
-        <input
-          type="text"
+        <ion-input
+          label="Nombre*:"
+          label-placement="floating"
+          fill="outline"
           formControlName="nombre"
-          class="border border-gray-300 p-3 mt-1 rounded"
         />
       </div>
 
       <div class="form-control flex flex-col mt-8">
-        <label for="" class="text-lg">Apellido*:</label>
-        <input
-          type="text"
+        <ion-input
+          label="Apellido*:"
+          label-placement="floating"
+          fill="outline"
           formControlName="apellido"
-          class="border border-gray-300 p-3 mt-1 rounded"
         />
       </div>
 
       <div class="form-control flex flex-col mt-8">
-        <label for="" class="text-lg">N° de documento*:</label>
+        <ion-select label="Sexo" fill="outline" formControlName="sexo">
+          <ion-select-option value="F"> Femenino </ion-select-option>
+          <ion-select-option value="M"> Masculino </ion-select-option>
+        </ion-select>
+      </div>
+
+      <div class="form-control flex flex-col mt-8">
         <input
-          type="number"
-          formControlName="documento"
-          class="border border-gray-300 p-3 mt-1 rounded"
+          type="date"
+          class="w-full p-3 rounded-lg border border-gray-400"
+          formControlName="fechaNacimiento"
         />
       </div>
 
       <div class="form-control flex flex-col mt-8">
-        <label for="" class="text-lg">Barrio*:</label>
-        <input
-          type="text"
+        <ion-select
+          label="Tipo de documento"
+          fill="outline"
+          formControlName="tipoDocumento"
+        >
+          <ion-select-option value="CC">
+            Cedula de ciudadania
+          </ion-select-option>
+          <ion-select-option value="TI">
+            Tarjeta de identidad
+          </ion-select-option>
+        </ion-select>
+      </div>
+
+      <div class="form-control flex flex-col mt-8">
+        <ion-input
+          label="N° de documento*:"
+          label-placement="floating"
+          fill="outline"
+          formControlName="numDocumento"
+        />
+      </div>
+
+      <div class="form-control flex flex-col mt-8">
+        <ion-select label="Ciudad" fill="outline" formControlName="ciudad">
+          ↓ @for (city of cities(); track $index) {
+          <ion-select-option [value]="city.idCiudad">
+            {{ city.nombre }}
+          </ion-select-option>
+          }
+        </ion-select>
+      </div>
+
+      <div class="form-control flex flex-col mt-8">
+        <ion-input
+          label="Barrio*:"
+          label-placement="floating"
+          fill="outline"
           formControlName="barrio"
-          class="border border-gray-300 p-3 mt-1 rounded"
         />
       </div>
 
       <div class="form-control flex flex-col mt-8">
-        <label for="" class="text-lg">Dirección*:</label>
-        <input
-          type="text"
+        <ion-input
+          label="Dirección*:"
+          label-placement="floating"
+          fill="outline"
           formControlName="direccion"
-          class="border border-gray-300 p-3 mt-1 rounded"
         />
       </div>
 
       <div class="form-control flex flex-col mt-8">
-        <label for="" class="text-lg">Celular*:</label>
-        <input
-          type="number"
+        <ion-input
+          label="Celular*:"
+          label-placement="floating"
+          fill="outline"
           formControlName="celular"
-          class="border border-gray-300 p-3 mt-1 rounded"
         />
       </div>
 
       <div class="form-control flex flex-col mt-8">
-        <label for="" class="text-lg">Telefono*:</label>
-        <input
-          type="number"
+        <ion-input
+          label="Telefono:"
+          label-placement="floating"
+          fill="outline"
           formControlName="telefono"
-          class="border border-gray-300 p-3 mt-1 rounded"
         />
       </div>
 
       <div class="form-control flex flex-col mt-8">
-        <label for="" class="text-lg">Correo electronico*:</label>
-        <input
-          type="text"
+        <ion-input
+          label="Correo electronico*:"
+          label-placement="floating"
+          fill="outline"
           formControlName="email"
-          class="border border-gray-300 p-3 mt-1 rounded"
         />
       </div>
 
       <div class="form-control flex flex-col mt-8">
-        <label for="" class="text-lg">Contraseña*:</label>
-        <input
+        <ion-input
           type="password"
+          label="Contraseña*:"
+          label-placement="floating"
+          fill="outline"
           formControlName="contraseña"
-          class="border border-gray-300 p-3 mt-1 rounded"
-        />
-      </div>
-
-      <div class="form-control flex flex-col mt-8">
-        <label for="" class="text-lg">Confirmar contraseña*:</label>
-        <input
-          type="password"
-          formControlName="contraseña2"
-          class="border border-gray-300 p-3 mt-1 rounded"
-        />
+        >
+          <ion-input-password-toggle slot="end" />
+        </ion-input>
       </div>
 
       <!-- buttons -->
-      <div class="flex mt-5">
+      <div class="flex flex-col mt-5">
         <button
           class="text-white bg-green-800 hover:bg-green-950 shadow-lg px-5 py-3 rounded-lg w-full font-bold text-lg flex justify-center items-center"
         >
@@ -110,6 +147,18 @@
           <div class="custom-loader ml-3"></div>
           }
         </button>
+
+        @if (showErrors()) {
+        <div class="mgs-errors flex flex-col mt-2">
+          <span class="text-sm text-green-800 mt-2">
+            - Todos los campos son obligatorios*
+          </span>
+
+          <span class="text-sm text-green-800 mt-2">
+            - Contraseña minimo 8 caracteres*
+          </span>
+        </div>
+        }
       </div>
 
       <div class="flex text-center flex-col mt-5">

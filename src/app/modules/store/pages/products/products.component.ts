@@ -3,6 +3,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  computed,
   inject,
   OnInit,
   signal,
@@ -36,81 +37,66 @@ const IonComponents = [IonSearchbar, IonRow, IonContent, IonCol, IonGrid];
 export default class ProductsComponent implements OnInit {
   private _apiProductService: ApiProductsService = inject(ApiProductsService);
   private _ctr = inject(ChangeDetectorRef);
+
+  public categories = signal<{ idCategoria: string; nombre: string }[]>([]);
+  public measures = signal<{ idMedida: string; nombre: string }[]>([]);
   public products = signal<ProductoEmpresa[]>([]);
-  private _termSearchCategory: string = '';
+  public filterProducts = signal<ProductoEmpresa[]>([]);
+
+  public currentCategory = signal('');
+
   ngOnInit(): void {
     this._setProducts();
+    this._getCategories();
+    this._getMeasures();
   }
   private _setProducts() {
     this._apiProductService.getProducts().subscribe({
       next: ({ data }) => {
-        //console.log(res.data);
         if (data) {
-          data.map((product) => {
-            return {
-              ...product,
-              quantity: 0,
-              totalPrice: 0,
-            };
-          });
           this.products.set(data);
-          this._apiProductService.setProductIntoCategories();
+          this.filterProducts.set(data);
         }
       },
     });
   }
-
-  public searchProductByTerm(event: any): void {
-    let term = event.target.value;
-    if (term === '') {
-      this._setProducts();
-      this._ctr.detectChanges();
-    }
-    this.products.set(
-      this.products().filter((product) =>
-        product.producto
-          .nombre!.toLowerCase()
-          .includes(event.target.value.toLowerCase())
-      )
-    );
-
-    if (this.products().length === 0) {
-      this.products.set(this._apiProductService.getAllProducts());
-    }
-
-    this._ctr.detectChanges();
+  private _getCategories(): void {
+    this._apiProductService.getCategories().subscribe({
+      next: (res) => {
+        console.log(res);
+        this.categories.set(res.data.categories);
+      },
+    });
+  }
+  private _getMeasures(): void {
+    this._apiProductService.getMeasures().subscribe({
+      next: (res) => {
+        this.measures.set(res);
+      },
+    });
   }
 
-  public filterByCategory(term: string): void {
-    if (term === '') {
-      this._setProducts();
-      this._ctr.detectChanges();
-      return;
+  getMeasures(id: string): string {
+    return this.measures().find((m) => m.idMedida === id)?.nombre || '';
+  }
+
+  public searchProductByTerm(event: any): void {
+    const term = event.detail.value;
+    if (term == '') {
+      this.filterProducts.set(this.products());
     }
 
-    this._termSearchCategory = term;
+    this.filterProducts.set(
+      this.products().filter((p) =>
+        p.producto?.nombre?.toLowerCase()?.includes(term.toLowerCase())
+      )
+    );
+  }
 
-    switch (term) {
-      case 'frutas':
-        console.log(this._apiProductService.getProductsFrutas());
-        this.products.set(this._apiProductService.getProductsFrutas());
-        this._ctr.detectChanges();
-        break;
-      case 'vegetales':
-        // console.log(this._apiProductService.getProductsFrutas());
-        this.products.set(this._apiProductService.getProductsVegetales());
-        this._ctr.detectChanges();
-        break;
-      case 'semillas':
-        this.products.set(this._apiProductService.getProductsSemillas());
-        this._ctr.detectChanges();
-        break;
-      case 'varios':
-        this.products.set(this._apiProductService.getProductsVarios());
-        this._ctr.detectChanges();
-        break;
-      default:
-        this.products.set(this._apiProductService.getAllProducts());
-    }
+  public filterByCategory(category: string): void {
+    this.filterProducts.set(
+      this.products().filter((p) => p.producto.idCategoria == category)
+    );
+    this.currentCategory.set(category);
   }
 }

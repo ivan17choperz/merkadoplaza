@@ -4,9 +4,15 @@ import {
   Component,
   inject,
   OnInit,
+  Output,
+  output,
+  signal,
+  Signal,
 } from '@angular/core';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import {
   IonTitle,
+  AlertController,
   IonToolbar,
   IonFooter,
   IonContent,
@@ -15,23 +21,35 @@ import {
 import { addIcons } from 'ionicons';
 import { addCircleOutline, removeCircleOutline } from 'ionicons/icons';
 import { ProductoEmpresa } from 'src/app/core/interfaces/products.interface';
+import { ApiProductsService } from 'src/app/core/services/api-products.service';
 import { CartListProductsService } from 'src/app/core/services/cart-list-products.service';
+import { StoreService } from 'src/app/core/services/store.service';
 
 @Component({
   selector: 'app-cart-shopping',
   standalone: true,
-  imports: [IonIcon, IonContent, IonFooter, IonToolbar, IonTitle, CommonModule],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './cart-shopping.component.html',
   styleUrl: './cart-shopping.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CartShoppingComponent implements OnInit {
-  private _cartListServices: CartListProductsService = inject(
-    CartListProductsService
-  );
+  deliveryCreated = output<boolean>();
+  measures = signal<{ idMedida: string; nombre: string }[]>([]);
 
-  public listProducts: ProductoEmpresa[] = [];
-  constructor() {
+  dayDelivery = new FormControl('');
+  hourDelivery = new FormControl('');
+  dateDelivery = new FormControl('');
+  recipient = new FormControl('');
+  phone = new FormControl('');
+  detail = new FormControl('');
+
+  constructor(
+    private _cartListServices: CartListProductsService,
+    private _apiProductService: ApiProductsService,
+    private _storeService: StoreService,
+    private alertController: AlertController
+  ) {
     addIcons({
       addCircleOutline,
       removeCircleOutline,
@@ -39,23 +57,118 @@ export class CartShoppingComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this._cartListServices.listProducts$.subscribe({
-      next: (products) => {
-        this.listProducts = products;
-        console.log(products);
+    this._getMeasures();
+  }
+
+  get listProducts() {
+    return this._cartListServices.showListProducts();
+  }
+
+  private _getMeasures(): void {
+    this._apiProductService.getMeasures().subscribe({
+      next: (res) => {
+        this.measures.set(res);
       },
-      error: (err) => console.log(err),
     });
   }
 
-  public updateQuantityProduct(idProduct: string, quantity: number): void {
-    const product = this.listProducts.find((p) => p.idProducto === idProduct);
-    if (product) {
-      // product.productoy = quantity;
+  getMeasures(id: string): string {
+    return this.measures().find((m) => m.idMedida === id)?.nombre || '';
+  }
+
+  getTotalValue(product: ProductoEmpresa): number {
+    return parseFloat(product.valor) * (product.quantity || 0);
+  }
+
+  get totalListProducts(): number {
+    return this._cartListServices.totalPrices();
+  }
+
+  public updateQuantityProduct(idProduct: string, quantity: number): void {}
+
+  public deleteProduct(idProduct: string): void {}
+
+  async saveDelivery(): Promise<void> {
+    const currentUser = await this._storeService.getData('current_user');
+
+    if (currentUser) {
+      const dataToSave = {
+        idEmpresa: 3,
+        idUsuario: currentUser.user_id ?? 1, //this data recept to api
+        fechaEntrega: this.parseDate(this.dateDelivery.value ?? ''),
+        recibe: this.recipient.value ?? '',
+        telefono: this.phone.value ?? '',
+        detalle: this.detail.value ?? '',
+        diaEntrega: this.dayDelivery.value ?? '',
+        hora: this.hourDelivery.value ?? '',
+        items: this.listProducts.map((p) => {
+          return {
+            idProductoEmpresa: parseInt(p.idProductoEmpresa),
+            cantidad: p.quantity,
+            valor: parseFloat(p.valor),
+          };
+        }),
+      };
+
+      const totalDelivery = parseFloat(
+        dataToSave.items
+          .reduce((acc: number, item) => {
+            return acc + item.cantidad * item.valor;
+          }, 0)
+          .toFixed(2)
+      );
+
+      if (totalDelivery >= 40000) {
+        this._apiProductService.createDelivery(dataToSave).subscribe({
+          next: (res) => {
+            if (res) {
+              this._cartListServices.clearProducts();
+              this.showAlertByDeliveryCreated();
+              this.resetFormControls();
+              this.emitDeliveryCreated();
+            } else {
+              console.error('Error al crear la pedido:', res);
+            }
+          },
+          error: (err) => {
+            console.error('Error al crear la pedido:', err);
+          },
+        });
+      }
     }
   }
 
-  public deleteProduct(idProduct: string): void {
-    this._cartListServices.removeProduct(idProduct);
+  parseDate(entryDate: string) {
+    const dateParts = entryDate.split('/');
+    return entryDate.length > 0
+      ? new Date(
+          parseInt(dateParts[2]),
+          parseInt(dateParts[1]) - 1,
+          parseInt(dateParts[0])
+        )
+      : new Date();
+  }
+
+  async showAlertByDeliveryCreated() {
+    const alert = await this.alertController.create({
+      header: 'Pedido realizado',
+      message: 'Recuerda estar atento al telefono el dia de la entrega',
+      buttons: ['Entendido'],
+    });
+
+    await alert.present();
+  }
+
+  private resetFormControls(): void {
+    this.dayDelivery.setValue('');
+    this.hourDelivery.setValue('');
+    this.dateDelivery.setValue('');
+    this.recipient.setValue('');
+    this.phone.setValue('');
+    this.detail.setValue('');
+  }
+
+  private emitDeliveryCreated() {
+    this.deliveryCreated.emit(true);
   }
 }
