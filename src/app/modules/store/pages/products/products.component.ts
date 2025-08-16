@@ -56,6 +56,7 @@ export default class ProductsComponent implements OnInit {
         if (data) {
           this.products.set(data);
           this.filterProducts.set(data);
+          this.filterByCategory('7');
         }
       },
     });

@@ -14,7 +14,7 @@
     <!-- input -->
     <ion-row class="">
       <ion-col size="12">
-        <form class="w-full flex justify-center">
+        <div class="w-full flex justify-center">
           <div class="form-control w-11/12">
             <ion-searchbar
               placeholder="Buscar producto"
@@ -23,9 +23,10 @@
               [debounce]="800"
               animated="true"
               (ionInput)="searchProductByTerm($event)"
-            ></ion-searchbar>
+              (keydown.enter)="searchProductByTerm($event)"
+            />
           </div>
-        </form>
+        </div>
       </ion-col>
     </ion-row>
 
@@ -50,7 +51,12 @@
             height="50px"
           />
         </div>
-        <p class="font-bold text-center">
+        <p
+          class="font-bold text-center mt-2"
+          [ngClass]="{
+          'text-green-500 ': currentCategory() === category.idCategoria,
+        }"
+        >
           {{ category.nombre | uppercase }}
         </p>
       </ion-col>

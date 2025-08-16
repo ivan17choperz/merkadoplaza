@@ -70,7 +70,7 @@ export default class LoginComponent {
     this._authServices.login(this.loginForm.value).subscribe({
       next: (res) => {
         this.loading.set(false);
-        console.log(res.data);
+        this.resetValues();
         this.storeServices.saveData('current_user', res.data);
         this._router.navigateByUrl('modules/store');
       },
@@ -80,5 +80,9 @@ export default class LoginComponent {
         this.msgError.set(err.error.message);
       },
     });
+  }
+
+  private resetValues() {
+    this.loginForm.reset();
   }
 }

@@ -44,7 +44,7 @@
     <div action="" class="text-green-700">
       <h2 class="text-2xl font-bold">Realizar pedido</h2>
       <div class="form-control flex flex-col mt-3">
-        <label class="font-semibold">Dia de Entrega:</label>
+        <!-- <label class="font-semibold">Dia de Entrega:</label>
         <select
           [formControl]="dayDelivery"
           class="w-full px-1 py-2 mt-2 rounded-xl border border-gray-400"
@@ -56,41 +56,63 @@
           <option value="viernes">Viernes</option>
           <option value="sabado">Sabado</option>
           <option value="domingo">Domingo</option>
-        </select>
+        </select> -->
+
+        <ion-select
+          label="Dia de Entrega:"
+          fill="outline"
+          [formControl]="dayDelivery"
+        >
+          <ion-select-option [value]="'lunes'">Lunes</ion-select-option>
+          <ion-select-option [value]="'martes'">Martes</ion-select-option>
+          <ion-select-option [value]="'miercoles'">
+            Miercoles
+          </ion-select-option>
+          <ion-select-option [value]="'jueves'">Jueves</ion-select-option>
+          <ion-select-option [value]="'viernes'">Viernes</ion-select-option>
+          <ion-select-option [value]="'sabado'">Sabado</ion-select-option>
+          <ion-select-option [value]="'domingo'">Domingo</ion-select-option>
+        </ion-select>
       </div>
       <div class="form-control flex flex-col mt-5">
-        <label class="font-semibold">Horario de entrega:</label>
-        <select
-          class="w-full px-1 py-2 mt-2 rounded-xl border border-gray-400"
+        <ion-select
+          label="Horario de entrega:"
+          fill="outline"
           [formControl]="hourDelivery"
         >
-          <option value=" 8:00AM - 12:00PM">8:00AM - 12:00PM</option>
-          <option value=" 12:00PM - 2:00PM">12:00PM - 2:00PM</option>
-          <option value=" 2:00PM - 6:00PM">2:00PM - 6:00PM</option>
-        </select>
+          <ion-select-option [value]="'8:00AM - 12:00PM'">
+            8:00AM - 12:00PM
+          </ion-select-option>
+          <ion-select-option [value]="'12:00PM - 2:00PM'">
+            12:00PM - 2:00PM
+          </ion-select-option>
+          <ion-select-option [value]="'2:00PM - 6:00PM'">
+            2:00PM - 6:00PM
+          </ion-select-option>
+        </ion-select>
       </div>
       <div class="form-control flex flex-col mt-5">
-        <label class="font-semibold">Quien recibe:</label>
-        <input
+        <ion-input
+          label="Quien recibe:"
+          label-placement="floating"
+          fill="outline"
           [formControl]="recipient"
-          type="text"
-          class="w-full px-1 py-2 mt-2 rounded-xl border border-gray-400"
         />
       </div>
       <div class="form-control flex flex-col mt-5">
-        <label class="font-semibold">Detalles del pedido:</label>
-        <textarea
+        <ion-textarea
+          label="Detalles del pedido:"
+          labelPlacement="floating"
+          fill="outline"
           [formControl]="detail"
-          type="text"
-          class="w-full px-1 py-2 mt-2 rounded-xl border border-gray-400"
-        ></textarea>
+        />
       </div>
       <div class="form-control flex flex-col mt-5">
-        <label class="font-semibold">Teléfono:</label>
-        <input
+        <ion-input
+          label="Teléfono:"
+          label-placement="floating"
+          fill="outline"
           [formControl]="phone"
-          type="number"
-          class="w-full px-1 py-2 mt-2 rounded-xl border border-gray-400"
         />
       </div>
       <div class="form-control flex flex-col mt-5">

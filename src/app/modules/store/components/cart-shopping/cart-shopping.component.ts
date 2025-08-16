@@ -17,6 +17,12 @@ import {
   IonFooter,
   IonContent,
   IonIcon,
+  IonInput,
+  IonTextarea,
+  IonSelect,
+  IonSelectOption,
+  IonLabel,
+  IonItem,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { addCircleOutline, removeCircleOutline } from 'ionicons/icons';
@@ -24,11 +30,21 @@ import { ProductoEmpresa } from 'src/app/core/interfaces/products.interface';
 import { ApiProductsService } from 'src/app/core/services/api-products.service';
 import { CartListProductsService } from 'src/app/core/services/cart-list-products.service';
 import { StoreService } from 'src/app/core/services/store.service';
+import { colombianPhoneValidator } from 'src/app/core/validators/phone.validator';
 
 @Component({
   selector: 'app-cart-shopping',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [
+    IonItem,
+    IonLabel,
+    IonTextarea,
+    IonInput,
+    CommonModule,
+    ReactiveFormsModule,
+    IonSelect,
+    IonSelectOption,
+  ],
   templateUrl: './cart-shopping.component.html',
   styleUrl: './cart-shopping.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -41,7 +57,7 @@ export class CartShoppingComponent implements OnInit {
   hourDelivery = new FormControl('');
   dateDelivery = new FormControl('');
   recipient = new FormControl('');
-  phone = new FormControl('');
+  phone = new FormControl('', [colombianPhoneValidator()]);
   detail = new FormControl('');
 
   constructor(

@@ -149,11 +149,16 @@ export default class RegisterComponent implements OnInit {
       const data = await this._authServices.register(saveUser);
 
       if (data.status == 'success') {
+        this.resetValues();
         this._storageServices.saveData('current_user_id', data.data);
         this._router.navigate(['/modules/store']);
       }
     } catch (error) {
       this.showErrors.set(true);
     }
+  }
+
+  private resetValues() {
+    this.registerForm.reset();
   }
 }
