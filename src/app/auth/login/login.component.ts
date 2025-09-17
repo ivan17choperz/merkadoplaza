@@ -72,6 +72,7 @@ export default class LoginComponent {
         this.loading.set(false);
         this.resetValues();
         this.storeServices.saveData('current_user', res.data);
+        console.log(res.data);
         this._router.navigateByUrl('modules/store');
       },
       error: (err) => {

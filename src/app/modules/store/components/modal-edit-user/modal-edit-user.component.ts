@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -22,6 +22,7 @@ import {
 } from '@ionic/angular/standalone';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { StoreService } from 'src/app/core/services/store.service';
+import { LoaderComponent } from '../loader/loader.component';
 
 @Component({
   standalone: true,
@@ -39,6 +40,7 @@ import { StoreService } from 'src/app/core/services/store.service';
     IonFooter,
     IonHeader,
     ReactiveFormsModule,
+    LoaderComponent,
   ],
   selector: 'app-modal-edit-user',
   templateUrl: './modal-edit-user.component.html',
@@ -46,6 +48,8 @@ import { StoreService } from 'src/app/core/services/store.service';
 })
 export class ModalEditUserComponent implements OnInit {
   formUpdateUser!: FormGroup;
+  blockBtn = signal(true);
+  showLoader = signal(false);
 
   constructor(
     private fb: FormBuilder,
@@ -66,7 +70,7 @@ export class ModalEditUserComponent implements OnInit {
       ],
       direccion: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
-      contrasena: ['', [Validators.minLength(8)]],
+      contrasena: [''],
     });
   }
 
@@ -75,6 +79,7 @@ export class ModalEditUserComponent implements OnInit {
   }
 
   async populateForm() {
+    this.showLoader.set(true);
     const info = await this._storeService.getData('current_user');
     const { data, status } = await this.authService.getUserById(info.user_id);
     console.log(data);
@@ -83,22 +88,27 @@ export class ModalEditUserComponent implements OnInit {
         nombre: data.nombre,
         apellido: data.apellido,
         celular: data.celular,
-        // direccion: data.direccion,
+        direccion: data.direccion,
         email: data.email,
       });
+      this.blockBtn.set(false);
+      this.showLoader.set(false);
     }
   }
 
   async updateUser() {
     if (this.formUpdateUser.valid) {
+      this.showLoader.set(true);
       const info = await this._storeService.getData('current_user');
       const userData = this.formUpdateUser.value;
       const resp = await this.authService.updateUser(info.user_id, userData);
       if (resp.status === 'success') {
         console.log(resp);
+        this.showLoader.set(false);
         this.closeModal();
       }
     } else {
+      this.showLoader.set(false);
       console.log('Form is invalid');
     }
   }

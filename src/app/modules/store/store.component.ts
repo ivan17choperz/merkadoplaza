@@ -113,7 +113,6 @@ export default class StoreComponent implements OnInit {
   async ngOnInit(): Promise<void> {
     const info = await this._storeService.getData('current_user');
     this.userInfo.set(info);
-    console.log(this.userInfo());
   }
 
   public scrollTop(): void {
@@ -136,7 +135,7 @@ export default class StoreComponent implements OnInit {
 
     modal.onWillDismiss().then((res) => {
       if (res.role === 'cancel') {
-        // this.showModalUser.set(false);
+        this.getInfoUser();
       }
     });
 
@@ -149,7 +148,6 @@ export default class StoreComponent implements OnInit {
       const { data, status } = await this.authService.getUserById(info.user_id);
 
       if (status == 'success') {
-        console.log(data);
         this.userInfo.set(data);
       }
     } catch (error) {

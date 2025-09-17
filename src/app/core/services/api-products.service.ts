@@ -13,6 +13,7 @@ import {
   ResponseDeliveriesUser,
   DeliveryCreated,
 } from '../interfaces/responses/store/search-delivery';
+import { DeliveryResponse } from '../interfaces/responses/store/delivery-response';
 
 @Injectable({
   providedIn: 'root',
@@ -73,13 +74,11 @@ export class ApiProductsService {
     );
   }
 
-  async getDeliveriesByUser(idUser: string): Promise<DeliveryCreated[]> {
+  async getDeliveriesByUser(idUser: string): Promise<ResponseDeliveriesUser> {
     return await lastValueFrom(
-      this._httpClientService
-        .get<ResponseDeliveriesUser>(
-          `${environment.base_url}/deliveries/user/${idUser}`
-        )
-        .pipe(map((res) => res.data))
+      this._httpClientService.get<ResponseDeliveriesUser>(
+        `${environment.base_url}/deliveries/user/${idUser}`
+      )
     );
   }
 }

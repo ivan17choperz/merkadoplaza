@@ -20,10 +20,10 @@
               placeholder="Buscar producto"
               inputmode="text"
               type="text"
-              [debounce]="800"
               animated="true"
+              [debounce]="500"
               (ionInput)="searchProductByTerm($event)"
-              (keydown.enter)="searchProductByTerm($event)"
+              (ionSubmit)="searchProductByTerm($event)"
             />
           </div>
         </div>

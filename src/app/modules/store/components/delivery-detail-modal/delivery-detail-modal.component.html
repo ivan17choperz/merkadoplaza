@@ -1,0 +1,77 @@
+<div
+  class="w-full h-full absolute top-0 left-0 bg-gray-100 flex justify-center items-center"
+>
+  <ion-grid fixed>
+    <ion-row>
+      <ion-col size="12">
+        <ion-card>
+          <ion-card-header>
+            <ion-grid fixed>
+              <ion-row class="ion-align-items-center">
+                <ion-col size="10">
+                  <ion-card-title> Detalle del pedido </ion-card-title>
+                </ion-col>
+                <ion-col size="2">
+                  <ion-button (click)="closeModal()">
+                    <ion-icon
+                      name="close-circle-outline"
+                      size="large"
+                      [mode]="'ios'"
+                    />
+                  </ion-button>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-card-header>
+          <ion-card-content>
+            <ion-grid fixed>
+              <ion-row class="h-[450px] overflow-scroll">
+                @if(delivery){ @for ( product of delivery.items; track $index) {
+                <ion-col size="12">
+                  <ion-card>
+                    <ion-card-content>
+                      <div class="w-full flex flex-row justify-start">
+                        <div class="me-5">
+                          <ion-avatar>
+                            <img [src]="product.producto.imagen" alt="no img" />
+                          </ion-avatar>
+                        </div>
+                        <div class="flex flex-col justify-start">
+                          <p class="font-bold text-xl">
+                            {{ product.producto.nombre }}
+                          </p>
+                          <p>
+                            <span class="font-bold">Precio U/d:</span>
+                            {{
+                              product.precio
+                                | currency : "COP" : "symbol-narrow"
+                            }}
+                          </p>
+                          <p>
+                            <span class="font-bold">Total</span>:
+                            {{
+                              getTotalDelivery(product.cantidad, product.precio)
+                                | currency : "COP" : "symbol-narrow"
+                            }}
+                          </p>
+                        </div>
+                        <div
+                          class="ms-5 p-2 rounded-lg border bg-slate-200 text-center flex justify-center items-center"
+                        >
+                          <h2 class="text-neutral-800">
+                            {{ product.cantidad }}
+                          </h2>
+                        </div>
+                      </div>
+                    </ion-card-content>
+                  </ion-card>
+                </ion-col>
+                }}
+              </ion-row>
+            </ion-grid>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</div>

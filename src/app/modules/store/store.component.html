@@ -6,7 +6,8 @@
           @if (userInfo() ) {
           <ion-icon size="large" name="person-circle-outline"></ion-icon>
           <p class="w-[120px] truncate overflow-hidden ms-2 font-bold">
-            {{ userInfo()?.nombre }} {{ userInfo()?.apellido }}
+            {{ userInfo()?.nombre | titlecase }}
+            {{ userInfo()?.apellido | titlecase }}
           </p>
           }
         </ion-col>

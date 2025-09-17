@@ -64,7 +64,6 @@ export default class ProductsComponent implements OnInit {
   private _getCategories(): void {
     this._apiProductService.getCategories().subscribe({
       next: (res) => {
-        console.log(res);
         this.categories.set(res.data.categories);
       },
     });

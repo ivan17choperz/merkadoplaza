@@ -29,6 +29,8 @@ import { Router } from '@angular/router';
 import { addIcons } from 'ionicons';
 import { settingsOutline, closeCircleOutline } from 'ionicons/icons';
 import { ModalEditUserComponent } from '../modal-edit-user/modal-edit-user.component';
+import { DeliveryDetailModalComponent } from '../delivery-detail-modal/delivery-detail-modal.component';
+import { DeliveryResponse } from 'src/app/core/interfaces/responses/store/delivery-response';
 
 @Component({
   standalone: true,
@@ -60,8 +62,9 @@ import { ModalEditUserComponent } from '../modal-edit-user/modal-edit-user.compo
 export class ModalUserComponent implements OnInit {
   @Input() userInfo!: User | null;
   // userInfo = input<User | null>(null);
-  deliveries = signal<DeliveryCreated[]>([]);
-
+  deliveries = signal<DeliveryResponse[]>([]);
+  currentDeliveryToShow = signal<DeliveryResponse | null>(null);
+  showDetailsDelivery = signal<boolean>(false);
   constructor(
     private modalCtrl: ModalController,
     private apiProductsService: ApiProductsService,
@@ -87,7 +90,8 @@ export class ModalUserComponent implements OnInit {
         );
 
         if (resp) {
-          this.deliveries.set(resp);
+          console.log(resp);
+          this.deliveries.set(resp.data);
         }
       } catch (error) {
         this.deliveries.set([]);
@@ -112,6 +116,26 @@ export class ModalUserComponent implements OnInit {
     });
 
     modal.present();
+  }
+
+  async openModalDeliveryDetail(delivery: DeliveryResponse) {
+    await this.modalCtrl
+      .create({
+        component: DeliveryDetailModalComponent,
+        componentProps: {
+          delivery: delivery,
+        },
+        showBackdrop: true,
+        canDismiss: true,
+      })
+      .then((modal) => {
+        modal.onDidDismiss().then((res) => {
+          if (res.role === 'cancel') {
+            this.showDetailsDelivery.set(false);
+          }
+        });
+        modal.present();
+      });
   }
   closeSession() {
     localStorage.removeItem('user');

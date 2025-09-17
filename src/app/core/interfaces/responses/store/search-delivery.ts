@@ -1,7 +1,9 @@
+import { DeliveryResponse } from './delivery-response';
+
 export interface ResponseDeliveriesUser {
   status: string;
   message: string;
-  data: DeliveryCreated[];
+  data: DeliveryResponse[];
 }
 
 export interface DeliveryCreated {

@@ -34,7 +34,7 @@
   <ion-list>
     @for (delivery of deliveries(); track $index) {
     <ion-item>
-      <ion-card class="w-full">
+      <ion-card (click)="openModalDeliveryDetail(delivery)" class="w-full">
         <ion-card-header>
           <ion-card-title>
             <b>
